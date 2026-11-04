@@ -10,6 +10,7 @@
 //       update(dt, t, p),          // pose everything from p (the current param values) and time
 //       focus: [x, y, z], radius,  // what the camera frames, metres
 //       probe() {},                // optional: numbers worth checking (contacts, lengths, clearances)
+//       readout() {},              // optional: lines of live text for the panel (['RPM 3000', ...])
 //       struts,                    // optional: makeStruts().list, so VIEW.check() can test their mounts
 //     };
 //   }
@@ -56,10 +57,12 @@ const setView = (v) => {
 
 // ------------------------------------------------------------------ panel
 const p = {damage: Number(q.get('damage') ?? 0.45)};
-const params = [{key: 'damage', label: 'paint wear', min: 0, max: 1, step: 0.01, value: p.damage}, ...(model.params ?? [])];
+// the paint-wear slider only for models that use worn materials (info.wear !== false)
+const params = [...(info.wear === false ? [] : [{key: 'damage', label: 'paint wear', min: 0, max: 1, step: 0.01, value: p.damage}]), ...(model.params ?? [])];
 const inputs = {};
 document.getElementById('name').textContent = info.name;
 document.getElementById('desc').textContent = info.description ?? '';
+if (model.readout) document.getElementById('ui').classList.add('wide');
 const box = document.getElementById('params');
 for (const d of params) {
   p[d.key] = d.value;
@@ -100,7 +103,9 @@ const set = (key, value) => {
 // ------------------------------------------------------------------ loop
 addEventListener('resize', () => stage.resize());
 stage.resize();
-setView('34');
+setView(model.view ?? '34');
+// compile every shader before the first frame so nothing stalls when it first comes into view
+await stage.renderer.compileAsync(stage.scene, camera).catch(() => {});
 let last = performance.now();
 let t = 0;
 let fps = 60;
@@ -108,6 +113,7 @@ let acc = 0;
 let frames = 0;
 let tier = 2;
 const statsEl = document.getElementById('stats');
+const readEl = document.getElementById('readout');
 const loop = () => {
   const now = performance.now();
   const dt = Math.min(0.05, (now - last) / 1000);
@@ -115,6 +121,8 @@ const loop = () => {
   t += dt;
   WEAR.uDamage.value = p.damage;
   model.update?.(dt, t, p);
+  if (model.readout && readEl) readEl.textContent = model.readout().join('\n');
+
   controls.update();
   stage.renderer.info.reset();
   stage.render(dt);

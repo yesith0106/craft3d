@@ -17,6 +17,10 @@
       #views { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
       #views button { font: inherit; font-size: 10px; padding: 4px 7px; border: 1px solid #d4d8dc; background: #fff; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
       #stats { margin-top: 10px; color: #6b7178; white-space: pre; }
+      #readout { white-space: pre; font-size: 11px; line-height: 1.55; margin: 2px 0 6px; color: #16181b; }
+      #readout:empty { display: none; }
+      #ui.wide { width: 360px; }
+      #ui.wide #readout { font-size: 10px; }
       body.nohud #ui { display: none; }
     </style>
   </head>
@@ -25,6 +29,7 @@
     <div id="ui">
       <h1 id="name">model</h1>
       <div class="sub" id="desc"></div>
+      <div id="readout"></div>
       <div id="params"></div>
       <div id="views"></div>
       <div id="stats"></div>

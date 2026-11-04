@@ -1,9 +1,9 @@
 # craft3d
 
-**A Claude Code skill for building accurate, realistic 3D models in three.js from code.** Give it a photo, a drawing, a product, or just an idea, and it builds the object at real dimensions, with joints that move by real kinematics and worn, damaged metal generated in a shader (no textures). Then it **measures and photographs its own work** before calling it done.
+**A Claude Code skill for building accurate, realistic 3D models and working mechanisms in three.js from code.** Give it a photo, a drawing, a product, a spec, or just an idea, and it builds the object at real dimensions with every moving part driven by real kinematics: IK, slider-cranks, gear trains, linkages, cams. Materials are clean showroom finishes or worn, damaged metal generated in shaders (no textures). Then it **measures and photographs its own work** before calling it done, and exports **one HTML file** that opens offline.
 
-![Views of the starter model](docs/crane-views.png)
-<sub>The starter model in the viewer: front, side, 3/4, then the same close-up at factory, worn and battle-damaged paint.</sub>
+![A running Chevrolet 350 small-block V8, built with craft3d](docs/v8-viewer.jpg)
+<sub>The `v8` example: a Chevrolet 350 small-block from its published dimensions, running in a single 834 KB HTML file. Rpm and throttle set the gas model; the readout shows pressure, torque, power and the stroke of every cylinder.</sub>
 
 ---
 
@@ -23,7 +23,33 @@ The checks find real mistakes. While the skill was being built, they caught a hy
 
 | Before: the cylinder base floats in front of the post | After: a mounting bracket, check passes |
 |---|---|
-| ![before](docs/check-before.png) | ![after](docs/check-after.png) |
+| ![before](docs/check-before.jpg) | ![after](docs/check-after.jpg) |
+
+## The examples
+
+Start any project from the closest one: `node ~/.claude/skills/craft3d/tools/new.mjs ./my-project --example v8`
+
+| Example | What it is |
+|---|---|
+| `v8` | A running Chevrolet 350 small-block built from published dimensions, with these parts: <ul><li>a cross-plane crank, with 8 pistons and rods moved by the exact slider-crank equation</li><li>a 21:42 timing chain whose links move</li><li>the cam, 16 lobes, lifters, pushrods, 1.5:1 rockers, valves and springs</li><li>a distributor rotor that points at each cylinder's terminal as it fires</li><li>sparks 30° before top dead centre</li><li>each cylinder's charge coloured by its stroke</li><li>gas pressure, torque and power readouts</li><li>x-ray casings</li></ul> |
+| `mechanisms` | One crank drives a module-5 gear train, a piston in a glass cylinder, a rack and pinion, and a Theo Jansen leg |
+| `crane` (default) | A truck loader crane, the whole pattern in one short file: IK boom, two hydraulic cylinders, a hook that hangs plumb |
+
+What the V8's self-test proves, all measured on the rendered model:
+
+| Check | Result |
+|---|---|
+| Displacement | 349.8 cubic inches (a "350") |
+| Piston below the deck at top dead centre | 0.025", the factory figure |
+| Firing order, derived purely from the crank geometry | 1-8-4-3-6-5-7-2 |
+| Rod length and wrist pin position | error 0 on every frame |
+| Distributor rotor and cam lobe timing | 0.000° error |
+| Closest valve-to-piston gap through the cycle | 2.68 mm, at overlap |
+| Full-throttle average cylinder pressure; torque | 11 bar; about 425 N·m (315 lb-ft) at the crank |
+
+| Valvetrain close-up | Mechanisms |
+|---|---|
+| ![valvetrain](docs/v8-valvetrain.jpg) | ![mechanisms](docs/mechanisms.jpg) |
 
 ---
 
@@ -54,6 +80,8 @@ Attach a reference image, or name the object:
 > /craft3d Build a CAT 320 excavator at real dimensions with a slider for each hydraulic joint.
 
 > Recreate this robot [image]. Keep the materials ultra realistic: metal and damaged metal.
+
+> Build a full functional simulation of a V8 engine as an HTML file.
 
 Claude collects the specs, measures your image (mm per pixel from a known size), lists every feature it sees, and builds view by view. It matches the camera to your photo for a side-by-side comparison. At the end it tells you what was matched from evidence, what was measured from the image, and what it had to infer.
 
@@ -90,7 +118,7 @@ cd my-model
 npm run dev          # open the URL it prints
 ```
 
-![The viewer](docs/viewer.png)
+![The viewer](docs/viewer.jpg)
 
 The viewer gives you:
 - an orbit camera
@@ -101,6 +129,8 @@ The viewer gives you:
 - `H` to hide the panel
 
 Add `?stage=outdoor` to the URL for sky, haze and sun.
+
+To share a model, run `npm run html`. It builds `dist/model.html`, one self-contained file that opens by double-clicking, with no server and no internet needed.
 
 Edit `src/model/model.js`. The starter is a hydraulic loader crane that shows the whole pattern in one file. A model exports `info` and `build()`:
 
@@ -126,15 +156,16 @@ export function build({stage, THREE}) {
 
 | File | What's in it |
 |---|---|
-| `shapes.js` | `box`, rounded box `rb`, `cylX/Y/Z`, `slab` (extruded polygon), `chamferBox`, `frameGeo`, `lathe`, `ibeam`, `tube`, `boltHead`, `rock`, seeded `rng`, and `kit()` for placing parts consistently |
+| `shapes.js` | `box`, rounded box `rb`, `cylX/Y/Z`, `slab`, `chamferBox`, `profile` (outlines with holes), `frameGeo`, `lathe`, `ibeam`, `tube`, `sweep`, `gear` (sized by real module, spur or helical), `rack`, `spring`, `tyre`, `ringText`, `boltHead`, `rock`, seeded `rng`, `setDetail('lo')` for a light build, and `kit()` |
+| `materials.js` | Clean finishes: clearcoat paints, gloss and satin black, steel, chrome, aluminium, brass, bronze, copper, ceramic, rubber, glass, and a flat low-detail variant |
 | `wear.js` | `makeWorn({color, rough, painted, bare, seed, dent})` for worn paint or bare metal; `bakeRest(root)`; the global `WEAR.uDamage` (0 to 1) |
-| `rig.js` | `twoLinkIK`, `onSeg`, `lineArm` (actuator lever arms), `strideFor` (no-slip walking), `smoother`, `damp`, and `makeStruts` (hydraulic cylinders aimed between moving parts, with hoses) |
+| `rig.js` | Motion helpers:<ul><li>`twoLinkIK`</li><li>`circles` (an exact linkage solver)</li><li>`sliderCrank`</li><li>`meshAngle` and `centreDistance` (meshing gears)</li><li>`rackTravel`</li><li>`aim` (a rod between two points)</li><li>`instancedLinks` (many links in one draw call)</li><li>`tabulate`</li><li>`lineArm`</li><li>`strideFor` (no-slip walking)</li><li>`makeStruts` (hydraulic cylinders with hoses)</li></ul> |
 | `props.js` | Real-size props: 20 ft container, 200 l drum, jersey barrier, crate, 9 m light pole, broken wall, gantry crane, rubble, plus ground colliders and `collide()` |
-| `stage.js` | `createStage({canvas, mode: 'studio' \| 'outdoor'})`: lighting, sun shadows that follow a target, ground, ambient occlusion, quality tiers |
+| `stage.js` | `createStage({canvas, mode, env, floor})`: a soft-box or room studio, or an outdoor sky; a concrete or shadow-only floor; shadows that follow a target; ambient occlusion with a skip list; quality tiers |
 | `textures.js` | Procedural concrete and ground variation |
 | `checks.js` | `floatingParts`, `anchorGaps`, `overlaps` |
 
-![Outdoor props](docs/outdoor-props.png)
+![Outdoor props](docs/outdoor-props.jpg)
 <sub>`?stage=outdoor` with the props library: containers, gantry crane, barriers, drums, light pole, broken wall, rubble.</sub>
 
 ### Testing a model
@@ -166,6 +197,10 @@ Plan steps:
 | `{"wait": 800}` | Waits, in milliseconds |
 | `{"damage": 0.92}` | Sets paint wear |
 | `{"sample": {"expr": "VIEW.probe()", "frames": 120, "label": "x"}}` | Records a value every frame to JSON |
+| `{"filmstrip": {"every": 250, "count": 8, "label": "cycle"}}` | Takes a frame every N ms and tiles them in time order with `t=` labels, to review motion without a video |
+
+![filmstrip](docs/v8-filmstrip.jpg)
+<sub>A filmstrip of the V8 valvetrain: pistons travel, valves open, and the charges change colour stroke by stroke.</sub>
 
 A model passes when:
 - `VIEW.check()` returns `{"floating": [], "anchors": []}` at rest and at the extremes of every input
@@ -187,14 +222,16 @@ references/
   pitfalls.md            bugs that were hit, and their fixes
 lib/                     the library (copied into each project as src/craft/)
 template/                the viewer project
-tools/new.mjs            scaffold a project
-tools/shoot.mjs          screenshot + measure + contact sheet
+examples/                v8, mechanisms (crane is the template's own model)
+tools/new.mjs            scaffold a project (--example)
+tools/shoot.mjs          screenshots, filmstrips, measurements, contact sheets
+tools/html.mjs           fold a build into one offline HTML file
 docs/                    images for this guide
 ```
 
 ## Troubleshooting
 
-- **Blank page from `dist/index.html`.** Built pages use ES modules and must be served (`npm run preview`), not double-clicked.
+- **Blank page from `dist/index.html`.** That page needs a server (`npm run preview`). For double-clicking, use `npm run html` and open `dist/model.html`.
 - **`shoot.mjs` can't find Chromium.** Run `npm run setup` in the skill folder, or set `CHROMIUM=/path/to/chrome`.
 - **The tool warns "software renderer".** The headless browser didn't get your GPU, so frame rates aren't representative. Run it on a machine with a GPU or desktop session.
 - **Low frame rate.** The viewer steps down automatically (no ambient occlusion, then lower resolution). Check the `draws` count, and merge static geometry if it's over about 500.

@@ -14,6 +14,8 @@
 //   {"views": ["front", "side", "34", {"az": 40, "el": 10, "d": 4}]}   VIEW.setView each, settle, screenshot each
 //   {"sample": {"expr": "VIEW.probe()", "frames": 120, "label": "feet"}}  evaluate expr once per frame, save JSON
 //   {"damage": 0.92}                                 VIEW.damage(v)
+//   {"filmstrip": {"every": 120, "count": 12, "label": "walk"}}   motion review: a frame every N ms, tiled in time order
+//                                                    into <label>.png with t= on each tile (read it like a comic strip)
 // The page must expose window.VIEW (the template does); views and damage need it, plain key/eval plans don't.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -71,6 +73,7 @@ const gpu = await page.evaluate(() => {
 });
 
 const shots = [];
+const strips = {};
 const measured = {};
 let n = 0;
 const snap = async (name) => {
@@ -110,16 +113,27 @@ for (const s of plan) {
     fs.writeFileSync(path.join(out, `${label}.json`), JSON.stringify(measured[label]));
   }
   if (s.shot) await snap(s.shot);
+  if (s.filmstrip) {
+    const {every = 120, count = 12, label = `strip${Object.keys(strips).length}`} = s.filmstrip;
+    const list = (strips[label] = []);
+    const t0 = Date.now();
+    for (let k = 0; k < count; k++) {
+      const file = path.join(out, `${label}-${String(k).padStart(2, '0')}.png`);
+      await page.screenshot({path: file});
+      list.push({file, name: `${label} t=${((Date.now() - t0) / 1000).toFixed(2)}s`});
+      const wait = t0 + (k + 1) * every - Date.now();
+      if (wait > 0) await page.waitForTimeout(wait);
+    }
+  }
 }
 const stats = await page.evaluate(() => (window.VIEW?.stats ? window.VIEW.stats() : null));
 
-// contact sheet: tile every screenshot with its name, in the browser (no ffmpeg needed)
-if (shots.length > 1) {
-  const cols = Number(args.cols ?? Math.min(3, shots.length));
+// tile screenshots into one labelled sheet, in the browser (no ffmpeg needed)
+const tile = async (list, file, cols) => {
   const tw = 720;
   const th = Math.round((tw * H) / W);
-  const imgs = shots.map((s) => ({name: s.name, src: 'data:image/png;base64,' + fs.readFileSync(s.file).toString('base64')}));
-  const sheet = await browser.newPage({viewport: {width: cols * tw, height: Math.ceil(imgs.length / cols) * th}});
+  const imgs = list.map((s) => ({name: s.name, src: 'data:image/png;base64,' + fs.readFileSync(s.file).toString('base64')}));
+  const sheet = await browser.newPage({viewport: {width: 400, height: 300}});
   const data = await sheet.evaluate(
     async ({imgs, cols, tw, th}) => {
       const c = document.createElement('canvas');
@@ -128,6 +142,7 @@ if (shots.length > 1) {
       const g = c.getContext('2d');
       g.fillStyle = '#000';
       g.fillRect(0, 0, c.width, c.height);
+      g.font = '600 15px monospace';
       for (let i = 0; i < imgs.length; i++) {
         const im = new Image();
         im.src = imgs[i].src;
@@ -136,19 +151,23 @@ if (shots.length > 1) {
         const y = Math.floor(i / cols) * th;
         g.drawImage(im, x, y, tw, th);
         g.fillStyle = 'rgba(0,0,0,.6)';
-        g.fillRect(x, y, g.measureText(imgs[i].name).width + 40, 26);
+        g.fillRect(x, y, g.measureText(imgs[i].name).width + 20, 26);
         g.fillStyle = '#fff';
-        g.font = '600 15px monospace';
         g.fillText(imgs[i].name, x + 10, y + 18);
       }
       return c.toDataURL('image/png').split(',')[1];
     },
     {imgs, cols, tw, th},
   );
-  fs.writeFileSync(path.join(out, 'sheet.png'), Buffer.from(data, 'base64'));
-}
+  await sheet.close();
+  fs.writeFileSync(file, Buffer.from(data, 'base64'));
+  return file;
+};
+const sheets = [];
+if (shots.length > 1) sheets.push(await tile(shots, path.join(out, 'sheet.png'), Number(args.cols ?? Math.min(3, shots.length))));
+for (const [label, list] of Object.entries(strips)) sheets.push(await tile(list, path.join(out, `${label}.png`), Math.min(4, list.length)));
 await browser.close();
 server?.kill();
 
-console.log(JSON.stringify({gpu, shots: shots.map((s) => s.file), sheet: shots.length > 1 ? path.join(out, 'sheet.png') : null, stats, measured: Object.fromEntries(Object.entries(measured).map(([k, v]) => [k, `${v.length} rows -> ${path.join(out, k + '.json')}`])), errors}, null, 2));
+console.log(JSON.stringify({gpu, shots: shots.map((s) => s.file), sheets, stats, measured: Object.fromEntries(Object.entries(measured).map(([k, v]) => [k, `${v.length} rows -> ${path.join(out, k + '.json')}`])), errors}, null, 2));
 if (/swiftshader|llvmpipe|software/i.test(gpu)) console.error('WARNING: software renderer; frame rates and some shading are not representative.');

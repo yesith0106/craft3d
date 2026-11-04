@@ -2,6 +2,7 @@
   "name": "craft3d",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "Tools for the craft3d skill: headless screenshots and measurements of three.js models.",
   "scripts": {
     "setup": "npm install && npx playwright install chromium"
