@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>craft3d viewer</title>
+    <link rel="icon" href="data:," />
+    <style>
+      html, body { margin: 0; height: 100%; overflow: hidden; background: #e1e6ea; font: 11px/1.5 ui-monospace, 'SF Mono', Menlo, monospace; color: #16181b; }
+      #c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+      #ui { position: fixed; right: 16px; top: 16px; width: 250px; padding: 12px 14px; background: rgba(255,255,255,.9); border: 1px solid #dfe2e6; }
+      #ui h1 { font: 700 12px/1.3 ui-sans-serif, system-ui, sans-serif; letter-spacing: 2px; margin: 0 0 2px; text-transform: uppercase; }
+      #ui .sub { color: #6b7178; margin-bottom: 10px; }
+      #ui label { display: block; margin-top: 8px; letter-spacing: 1px; text-transform: uppercase; color: #4b5057; }
+      #ui label span { float: right; color: #16181b; }
+      #ui input[type=range] { width: 100%; accent-color: #e3172c; }
+      #views { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+      #views button { font: inherit; font-size: 10px; padding: 4px 7px; border: 1px solid #d4d8dc; background: #fff; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+      #stats { margin-top: 10px; color: #6b7178; white-space: pre; }
+      body.nohud #ui { display: none; }
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div id="ui">
+      <h1 id="name">model</h1>
+      <div class="sub" id="desc"></div>
+      <div id="params"></div>
+      <div id="views"></div>
+      <div id="stats"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
