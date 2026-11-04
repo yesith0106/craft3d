@@ -23,6 +23,8 @@ The project is plain Vite + three.js. `src/model/` is the model; `src/craft/` is
 
 ## Examples: copy the closest one
 
+Each is also built as one offline file in `$SKILL_DIR/demos/` (`crane.html`, `mechanisms.html`, `v8-engine.html`). Open one to show the user what the skill produces. After changing an example, rebuild its demo with `npm run html` in a scaffold of it and copy `dist/model.html` over.
+
 | Example | What it is | Worth stealing |
 |---|---|---|
 | `crane` (default) | Truck-mounted loader crane: slewing base, 2-section boom, 2 hydraulic cylinders, a hook that hangs plumb | The whole pattern in 120 lines: parameter block, part tree, `twoLinkIK`, `makeStruts`, clevis lugs, `probe()` |

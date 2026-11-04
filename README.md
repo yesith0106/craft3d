@@ -27,7 +27,9 @@ The checks find real mistakes. While the skill was being built, they caught a hy
 
 ## The examples
 
-Start any project from the closest one: `node ~/.claude/skills/craft3d/tools/new.mjs ./my-project --example v8`
+**Try them now:** the [`demos/`](demos) folder holds a ready-built, single-file HTML of each example: [`v8-engine.html`](demos/v8-engine.html), [`mechanisms.html`](demos/mechanisms.html) and [`crane.html`](demos/crane.html). Download one and double-click it. It runs offline, with no install. (GitHub shows HTML as source code, so open the file locally.)
+
+Start your own project from the closest one: `node ~/.claude/skills/craft3d/tools/new.mjs ./my-project --example v8` (`--example mechanisms`, or leave it off for the crane).
 
 | Example | What it is |
 |---|---|
@@ -223,6 +225,7 @@ references/
 lib/                     the library (copied into each project as src/craft/)
 template/                the viewer project
 examples/                v8, mechanisms (crane is the template's own model)
+demos/                   each example built as one offline HTML file
 tools/new.mjs            scaffold a project (--example)
 tools/shoot.mjs          screenshots, filmstrips, measurements, contact sheets
 tools/html.mjs           fold a build into one offline HTML file
