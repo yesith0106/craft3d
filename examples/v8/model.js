@@ -9,6 +9,7 @@ import * as THREE from 'three';
 import {cleanMaterials} from '../craft/materials.js';
 import {box, cylX, cylY, cylZ, gear, ibeam, kit, lathe, profile, rb, spring, tube} from '../craft/shapes.js';
 import {aim, instancedLinks} from '../craft/rig.js';
+import {centerline} from '../craft/ink.js';
 import {BANK, CYL, DISPLACEMENT, E, FIRE, imep, liftEx, liftIn, MAIN_Z, meanTorque, mod, ORDER, peakOf, pinXY, piston, PIN_PHASE, PIN_Z, pressure, psi, S_TDC, strokeOf, VALVE, gasTorque} from './kin.js';
 
 export const info = {name: 'Small-block V8 · 350', description: '5.7 L · 90° V · cross-plane · OHV 16 valves · 1-8-4-3-6-5-7-2', stage: 'studio', wear: false};
@@ -196,12 +197,15 @@ export function build({stage}) {
     liner.renderOrder = 3;
     const charge = new THREE.Mesh(cylY(E.bore / 2 - 1, 1, 40), new THREE.MeshBasicMaterial({color: '#4a90e2', transparent: true, opacity: 0.35, depthWrite: false}));
     charge.renderOrder = 2;
+    charge.userData.ink = 'color'; // the drawing look shows the gas in colour
     g.add(charge);
     stage.noAO.push(charge, liner);
     const pist = k.group(g);
+    pist.userData.noCut = true; // a section drawing leaves moving parts whole
     k.add(pist, pistonGeo, M.alu);
     k.add(pist, cylZ(11, 62, 20), M.steel); // wrist pin, along the crank
     const rod = new THREE.Group();
+    rod.userData.noCut = true;
     root.add(rod);
     for (const p of rodGeo) k.add(rod, p, M.steel);
     // two valves: E I I E E I I E along each head
@@ -226,6 +230,7 @@ export function build({stage}) {
       k.add(lobe, lobeGeo, M.steel);
       const bankRot = cy.bank === 'L' ? -45 : 45; // the lifter's direction from the cam centre, as a rotation
       lobe.rotation.z = (bankRot + (FIRE[cy.c] + peakOf(kind)) / 2) * D2R;
+      for (const o of [vg, spr, lifter, pushrod, rocker]) o.userData.noCut = true;
       return {kind, vz, vg, spr, lifter, pushrod, rocker, lobe, lift: 0};
     });
     // spark plug on the outboard side, leaning out
@@ -237,6 +242,7 @@ export function build({stage}) {
     const spark = new THREE.Mesh(new THREE.SphereGeometry(5, 12, 8), M.spark.clone());
     spark.position.set(0, -18, 0); // the electrode, down the plug's axis in the chamber
     spark.material.transparent = true;
+    spark.userData.ink = 'color';
     plug.add(spark);
     stage.noAO.push(spark);
     return {cy, i, g, liner, charge, pist, rod, valves, plug, spark};
@@ -399,6 +405,8 @@ export function build({stage}) {
       if (x <= 0.3 && i >= 0) stage.noAO.splice(i, 1);
     }
   };
+  // centre lines for the drawing look: the crank and the cam
+  root.add(centerline([0, 0, -380], [0, 0, 420]), centerline([0, E.camY, -300], [0, E.camY, 300]));
   pose(0);
 
   let cycle = 0;
@@ -407,6 +415,9 @@ export function build({stage}) {
     focus: [0, HEIGHT / 1000 + 0.15, 0],
     radius: 0.85,
     view: {az: 38, el: 16},
+    // the drawing look's section cut: a plane across the crank, from in front of the engine back through it.
+    // 0.38 puts it through the front pair of bores (cylinders 1 and 2).
+    section: {normal: [0, 0, 1], from: 0.5, to: -0.35, value: 0.38},
     params: [
       {key: 'rpm', label: 'engine speed', min: 600, max: 6000, step: 50, value: 1200, unit: 'rpm'},
       {key: 'throttle', label: 'throttle', min: 0, max: 1, step: 0.01, value: 0.35},

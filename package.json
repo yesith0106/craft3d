@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Tools for the craft3d skill: headless screenshots and measurements of three.js models.",
+  "description": "The craft3d engine behind the /3d-model and /wireframe Claude Code commands: library, viewer, examples and the headless check tool.",
   "scripts": {
-    "setup": "npm install && npx playwright install chromium"
+    "setup": "npm install && npx playwright install chromium && node tools/install.mjs",
+    "link": "node tools/install.mjs"
   },
   "dependencies": {
     "playwright": "1.58.2"

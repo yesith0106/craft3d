@@ -3,7 +3,7 @@
 //
 // The model contract (src/model/model.js):
 //   export const info = {name, description, stage: 'studio' | 'outdoor'};
-//   export function build({stage, THREE}) {
+//   export function build({stage, THREE, ink}) {   // ink: the drawing renderer (ink.planes = the section plane)
 //     return {
 //       root,                      // an Object3D in METRES (build parts in mm under a group scaled 0.001)
 //       params: [{key, label, min, max, step, value, unit}],   // the inputs that drive the pose
@@ -12,13 +12,17 @@
 //       probe() {},                // optional: numbers worth checking (contacts, lengths, clearances)
 //       readout() {},              // optional: lines of live text for the panel (['RPM 3000', ...])
 //       struts,                    // optional: makeStruts().list, so VIEW.check() can test their mounts
+//       section: {normal: [0, 0, 1], from, to},  // optional: a section cut for the drawing look (world metres;
+//                                  //   the plane keeps normal·p <= offset, offset runs from `from` (no cut) to `to`)
 //     };
 //   }
-// URL options: ?stage=outdoor|studio  ?hud=0  ?damage=0.9
+//   info.look = 'real' | 'drawing' picks the opening look; update() sees p.look.
+// URL options: ?stage=outdoor|studio  ?hud=0  ?damage=0.9  ?look=drawing  ?palette=paper|blueprint|print  ?section=0.5
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {createStage} from './craft/stage.js';
 import {WEAR} from './craft/wear.js';
+import {applyLook, createInk} from './craft/ink.js';
 import {anchorGaps, floatingParts} from './craft/checks.js';
 import * as MODEL from './model/model.js';
 
@@ -26,8 +30,10 @@ const q = new URLSearchParams(location.search);
 const info = MODEL.info ?? {name: 'model'};
 const stage = createStage({canvas: document.getElementById('c'), mode: q.get('stage') ?? info.stage ?? 'studio'});
 stage.renderer.info.autoReset = false; // count every pass of a frame, not just the last
-const model = MODEL.build({stage, THREE});
+const ink = createInk(stage, {palette: q.get('palette') ?? info.palette ?? 'paper', ...(info.lines ?? {})});
+const model = MODEL.build({stage, THREE, ink});
 stage.scene.add(model.root);
+let look = q.get('look') ?? info.look ?? 'real';
 const focus = new THREE.Vector3(...(model.focus ?? [0, 1, 0]));
 const radius = model.radius ?? 1.5;
 stage.follow(focus);
@@ -58,7 +64,11 @@ const setView = (v) => {
 // ------------------------------------------------------------------ panel
 const p = {damage: Number(q.get('damage') ?? 0.45)};
 // the paint-wear slider only for models that use worn materials (info.wear !== false)
-const params = [...(info.wear === false ? [] : [{key: 'damage', label: 'paint wear', min: 0, max: 1, step: 0.01, value: p.damage}]), ...(model.params ?? [])];
+const params = [
+  ...(info.wear === false ? [] : [{key: 'damage', label: 'paint wear', min: 0, max: 1, step: 0.01, value: p.damage, real: true}]),
+  ...(model.section ? [{key: 'section', label: 'section cut', min: 0, max: 1, step: 0.01, value: Number(q.get('section') ?? model.section.value ?? 0.5), drawing: true}] : []),
+  ...(model.params ?? []),
+];
 const inputs = {};
 document.getElementById('name').textContent = info.name;
 document.getElementById('desc').textContent = info.description ?? '';
@@ -77,7 +87,7 @@ for (const d of params) {
   };
   l.append(d.label ?? d.key, v, i);
   box.append(l);
-  inputs[d.key] = {i, show};
+  inputs[d.key] = {i, show, l, d};
   show();
 }
 for (const name of Object.keys(VIEWS)) {
@@ -86,9 +96,24 @@ for (const name of Object.keys(VIEWS)) {
   b.onclick = () => setView(name);
   document.getElementById('views').append(b);
 }
+// the look: 'real' (shaded) or 'drawing' (ink). Sliders tagged real/drawing show in their look only.
+const lookBtn = document.createElement('button');
+lookBtn.className = 'look';
+document.getElementById('views').append(lookBtn);
+const setLook = (l) => {
+  look = l === 'drawing' || l === 'ink' ? 'drawing' : 'real';
+  const drawing = look === 'drawing';
+  applyLook(model.root, drawing);
+  document.body.classList.toggle('drawing', drawing);
+  lookBtn.textContent = drawing ? 'realistic' : 'drawing';
+  for (const {l: el, d} of Object.values(inputs)) el.style.display = (d.real && drawing) || (d.drawing && !drawing) ? 'none' : '';
+};
+lookBtn.onclick = () => setLook(look === 'drawing' ? 'real' : 'drawing');
+setLook(look);
 if (q.get('hud') === '0') document.body.classList.add('nohud');
 addEventListener('keydown', (e) => {
   if (e.code === 'KeyH') document.body.classList.toggle('nohud');
+  if (e.code === 'KeyL') lookBtn.onclick();
   const k = {Digit1: 0.04, Digit2: 0.45, Digit3: 0.92}[e.code];
   if (k !== undefined) set('damage', k);
 });
@@ -101,8 +126,17 @@ const set = (key, value) => {
 };
 
 // ------------------------------------------------------------------ loop
-addEventListener('resize', () => stage.resize());
+// fat lines (inkLine, centerline) need the canvas size in the realistic look too
+const fitLines = () => {
+  const s = stage.renderer.getDrawingBufferSize(new THREE.Vector2());
+  stage.scene.traverse((o) => o.material?.isLineMaterial && o.material.resolution.copy(s));
+};
+addEventListener('resize', () => {
+  stage.resize();
+  fitLines();
+});
 stage.resize();
+fitLines();
 setView(model.view ?? '34');
 // compile every shader before the first frame so nothing stalls when it first comes into view
 await stage.renderer.compileAsync(stage.scene, camera).catch(() => {});
@@ -120,12 +154,17 @@ const loop = () => {
   last = now;
   t += dt;
   WEAR.uDamage.value = p.damage;
+  p.look = look;
   model.update?.(dt, t, p);
+  const S = model.section;
+  if (S && look === 'drawing' && p.section > 0.001) ink.setSection(S.normal, S.from + (S.to - S.from) * p.section);
+  else ink.setSection(null);
   if (model.readout && readEl) readEl.textContent = model.readout().join('\n');
 
   controls.update();
   stage.renderer.info.reset();
-  stage.render(dt);
+  if (look === 'drawing') ink.render();
+  else stage.render(dt);
   acc += dt;
   frames++;
   if (acc > 1) {
@@ -147,6 +186,9 @@ window.VIEW = {
   params: p,
   set,
   setView,
+  ink,
+  look: (l) => (l === undefined ? look : setLook(l)),
+  palette: (name) => ink.setPalette(name),
   damage: (v) => set('damage', v),
   probe: () => model.probe?.(),
   // geometry checks: parts touching nothing, actuator ends off their mounts
