@@ -1,6 +1,6 @@
 ---
 name: wireframe
-description: Build accurate 3D models in three.js drawn as technical illustrations: clean ink outlines with hidden lines removed, crease lines, section cuts with hatched cut faces, phantom lines for casings, dash-dot centre lines, flow lines coloured by temperature or pressure, and exploded views, on paper, blueprint or print palettes. Engines, turbines, gearboxes, pumps, mechanisms, machines and products at real dimensions, moving by real kinematics when they move, measured and photographed by a headless check loop; exports one offline HTML file. Use for "wireframe", "line drawing", "line art", "technical drawing", "technical illustration", "cutaway", "cross-section", "section view", "exploded view", "blueprint", "patent drawing", "how it works diagram", or recreating an object from a photo, spec or idea in that style. For shaded, realistic or worn metal use /3d-model instead.
+description: Build accurate 3D models in three.js drawn as technical illustrations: clean ink outlines with hidden lines removed, crease lines, section cuts with hatched cut faces, phantom lines for casings, dash-dot centre lines, flow lines coloured by temperature or pressure, and exploded views, on paper, blueprint or print palettes. Engines, turbines, gearboxes, pumps, mechanisms, machines and products at real dimensions, moving by real kinematics when they move, measured and photographed by a headless check loop; exports one offline HTML file. Researches the real object first, hunting for the maker's own CAD (STEP), spec tables and drawings, and builds on the maker's geometry when it is published. Use for "wireframe", "line drawing", "line art", "technical drawing", "technical illustration", "cutaway", "cross-section", "section view", "exploded view", "blueprint", "patent drawing", "how it works diagram", or recreating an object from a photo, spec or idea in that style. For shaded, realistic or worn metal use /3d-model instead.
 ---
 
 # /wireframe: the drawing look
@@ -14,7 +14,7 @@ ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d r
 cat "$ENGINE/METHOD.md" "$ENGINE/references/drawing.md"
 ```
 
-Read both in full before building, then `references/recreate.md` or `references/from-idea.md`. The closest example is usually `turbojet` (`node "$ENGINE/tools/new.mjs" ./my-model --example turbojet`): it opens in the drawing look and shows every feature below. Everything below is what is specific to drawings.
+Read both in full before building, then `references/recreate.md` or `references/from-idea.md`. **For anything real, research comes first** (`references/research.md`): a background research agent hunting for the maker's own CAD, spec table, drawings and measured reviews, started the moment the object is named. A published STEP becomes the geometry, and a section through it (`tools/step2mesh.py section`) shows how the parts nest before you draw them. For a product, `wooting80he` is the closest example: it opens as a blueprint with a title block (`info.sheet`), dimension lines and callouts (`annot.js`), section A–A and an exploded build, all on the maker's CAD. The closest example is usually `turbojet` (`node "$ENGINE/tools/new.mjs" ./my-model --example turbojet`): it opens in the drawing look and shows every feature below. Everything below is what is specific to drawings.
 
 ## Why the drawing is the harder test
 
@@ -38,6 +38,9 @@ A drawing shows every edge. A blade with too few sections, a casing that is a st
 | Exploded view | `exploder([{obj, dir, dist, at}])`, a slider 0..1; outermost parts first, along the direction they really come off |
 | Only in one look | `userData.inkOnly` / `userData.realOnly` (a display stand is `realOnly`) |
 | Line weight | `info.lines = {sil: 2.2, crease: 1.2, ghost: 1, creaseAngle: 32, hatch: 7}` (CSS px, degrees) |
+| Blueprint sheet | `info.palette: 'blueprint'` and `info.sheet = {marks, title, dwg, rows}`: a border, a header line and a title block, drawn by the viewer in the drawing look |
+| Dimensions and callouts | `dim(A, B, side, offset)`, `leader(at, to, text)`, `label(text, at)` from `examples/wooting80he/annot.js` (copy it in): extension lines, arrowheads, values, leaders ordered so none cross; tag them `inkOnly` |
+| The maker's CAD | `tools/step2mesh.py list / section / export`, `tools/cadpack.mjs`, `unpackCad()` from `lib/cad.js`: build on the real geometry (`references/research.md`) |
 
 ## Drawing checklist (with the shared one in METHOD.md)
 

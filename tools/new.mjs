@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // Scaffold a craft3d project: the viewer template, the library in src/craft/, and a model in src/model/.
-//   node new.mjs <dir> [--example crane|mechanisms|v8|turbojet] [--no-install]
+//   node new.mjs <dir> [--example crane|mechanisms|v8|turbojet|wooting80he] [--no-install]
 // crane (default): a hydraulic loader crane, the whole pattern in one file. mechanisms: gears, rack and pinion,
 // slider-crank and a Jansen leg off one crank. v8: a running small-block V8. turbojet: an axial turbojet, drawn as
-// a technical illustration (section cut, flow lines, exploded view).
+// a technical illustration (section cut, flow lines, exploded view). wooting80he: a keyboard built on the maker's
+// published STEP, a blueprint with dimensions and a title block; VITE_LOOK=real npm run html builds it shaded.
 import fs from 'node:fs';
 import path from 'node:path';
 import {execSync} from 'node:child_process';
@@ -14,7 +15,7 @@ const SKILL = path.join(HERE, '..');
 const argv = process.argv.slice(2);
 const dir = argv.find((a) => !a.startsWith('--'));
 if (!dir) {
-  console.error('usage: node new.mjs <dir> [--example crane|mechanisms|v8|turbojet] [--no-install]');
+  console.error('usage: node new.mjs <dir> [--example crane|mechanisms|v8|turbojet|wooting80he] [--no-install]');
   process.exit(1);
 }
 const dest = path.resolve(dir);

@@ -17,6 +17,9 @@
 //     };
 //   }
 //   info.look = 'real' | 'drawing' picks the opening look; update() sees p.look.
+//   info.sheet = {marks, title, dwg, sheet, rows: [[key, value], [key, value, key2, value2], [key, value, 'wide']]}:
+//     a drawing sheet (border, header line, title block) in the drawing look. info.shadowBox / info.aoRadius (m) for
+//     small objects.
 // URL options: ?stage=outdoor|studio  ?hud=0  ?damage=0.9  ?look=drawing  ?palette=paper|blueprint|print  ?section=0.5
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
@@ -28,7 +31,7 @@ import * as MODEL from './model/model.js';
 
 const q = new URLSearchParams(location.search);
 const info = MODEL.info ?? {name: 'model'};
-const stage = createStage({canvas: document.getElementById('c'), mode: q.get('stage') ?? info.stage ?? 'studio'});
+const stage = createStage({canvas: document.getElementById('c'), mode: q.get('stage') ?? info.stage ?? 'studio', extent: info.extent, shadowBox: info.shadowBox, aoRadius: info.aoRadius, floor: q.get('floor') ?? info.floor});
 stage.renderer.info.autoReset = false; // count every pass of a frame, not just the last
 const ink = createInk(stage, {palette: q.get('palette') ?? info.palette ?? 'paper', ...(info.lines ?? {})});
 const model = MODEL.build({stage, THREE, ink});
@@ -71,6 +74,21 @@ const params = [
 ];
 const inputs = {};
 document.getElementById('name').textContent = info.name;
+document.title = info.name;
+// the drawing sheet: border, header line and title block from info.sheet
+if (info.sheet) {
+  const S = info.sheet;
+  const esc = (t) => String(t ?? '').replace(/[&<>]/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;'})[c]);
+  const cells = (S.rows ?? []).map(([k, v, k2, v2]) => (k2 === 'wide' || k2 === undefined ? `<div class="k">${esc(k)}</div><div class="wide">${esc(v)}</div>` : `<div class="k">${esc(k)}</div><div>${esc(v)}</div><div class="k">${esc(k2)}</div><div>${esc(v2)}</div>`)).join('');
+  document.getElementById('sheet').innerHTML = `<div class="marks">${esc(S.marks)}</div><div class="tb"><div class="big">${esc(S.title ?? info.name)}</div><div class="k">dwg no.<br><b>${esc(S.dwg ?? '')}</b></div><div class="k">sheet<br><b>${esc(S.sheet ?? '1 / 1')}</b></div>${cells}</div>`;
+  document.body.classList.add('has-sheet');
+}
+const setPal = (name) => {
+  ink.setPalette(name);
+  for (const c of [...document.body.classList]) if (c.startsWith('pal-')) document.body.classList.remove(c);
+  if (typeof name === 'string') document.body.classList.add('pal-' + name);
+};
+setPal(q.get('palette') ?? info.palette ?? 'paper');
 document.getElementById('desc').textContent = info.description ?? '';
 if (model.readout) document.getElementById('ui').classList.add('wide');
 const box = document.getElementById('params');
@@ -188,7 +206,7 @@ window.VIEW = {
   setView,
   ink,
   look: (l) => (l === undefined ? look : setLook(l)),
-  palette: (name) => ink.setPalette(name),
+  palette: (name) => setPal(name),
   damage: (v) => set('damage', v),
   probe: () => model.probe?.(),
   // geometry checks: parts touching nothing, actuator ends off their mounts

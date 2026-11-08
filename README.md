@@ -41,16 +41,23 @@ The checks find real mistakes. While the skill was being built, they caught a hy
 
 ## The examples
 
-**Try them now:** the [`demos/`](demos) folder holds a ready-built, single-file HTML of each example: [`turbojet.html`](demos/turbojet.html), [`v8-engine.html`](demos/v8-engine.html), [`mechanisms.html`](demos/mechanisms.html) and [`crane.html`](demos/crane.html). Download one and double-click it. It runs offline, with no install. (GitHub shows HTML as source code, so open the file locally.) Every demo has the **drawing / realistic** button.
+**Try them now:** the [`demos/`](demos) folder holds a ready-built, single-file HTML of each example: [`turbojet.html`](demos/turbojet.html), [`v8-engine.html`](demos/v8-engine.html), [`mechanisms.html`](demos/mechanisms.html), [`crane.html`](demos/crane.html), and the Wooting 80HE as a blueprint, [`wooting-80he.html`](demos/wooting-80he.html), and shaded, [`wooting-80he-3d.html`](demos/wooting-80he-3d.html). Download one and double-click it. It runs offline, with no install. (GitHub shows HTML as source code, so open the file locally.) Every demo has the **drawing / realistic** button.
 
-Start your own project from the closest one: `node ~/.claude/craft3d/tools/new.mjs ./my-project --example turbojet` (`--example v8`, `--example mechanisms`, or leave it off for the crane).
+Start your own project from the closest one: `node ~/.claude/craft3d/tools/new.mjs ./my-project --example turbojet` (`--example wooting80he`, `--example v8`, `--example mechanisms`, or leave it off for the crane).
 
 | Example | What it is |
 |---|---|
+| `wooting80he` | The Wooting 80HE keyboard, built on Wooting's own published CAD. The case, plate, silicone gasket, PCB, foam, stabilisers, LED bar, feet and all 30 screw and insert positions come from their STEP assembly; the 84 switches and the OEM keycaps with legends are built to the MX and OEM standards. It opens as a blueprint with a title block, dimensions, section A–A through the key stack and an exploded build. Built with `VITE_LOOK=real` it opens shaded: six case finishes (ABS black, ghost, frost; zinc black, raw, white), PBT and ABS grain, clear Lekker switches with their springs, per-key RGB, the LED bar and a braided cable. Every published figure reproduces: 346 × 142 mm, 19.4 mm at the front, 28.4 mm with caps, 2.8°, 6° and 10° on its feet. |
 | `turbojet` | An axial turbojet, opening as a technical drawing: a 5-stage compressor, an annular combustor with 12 injectors, one turbine stage, a nozzle. The gas path is sized from its thermodynamics: the compressor hub rises stage by stage because continuity says it must as the air gets denser, and the turbine's work balances the compressor's. Flow lines are coloured by the gas temperature and move at the axial velocity. Section cut along the axis, exploded view, a spool speed slider. |
 | `v8` | A running Chevrolet 350 small-block built from published dimensions, with these parts: <ul><li>a cross-plane crank, with 8 pistons and rods moved by the exact slider-crank equation</li><li>a 21:42 timing chain whose links move</li><li>the cam, 16 lobes, lifters, pushrods, 1.5:1 rockers, valves and springs</li><li>a distributor rotor that points at each cylinder's terminal as it fires</li><li>sparks 30° before top dead centre</li><li>each cylinder's charge coloured by its stroke</li><li>gas pressure, torque and power readouts</li><li>x-ray casings</li></ul> |
 | `mechanisms` | One crank drives a module-5 gear train, a piston in a glass cylinder, a rack and pinion, and a Theo Jansen leg |
 | `crane` (default) | A truck loader crane, the whole pattern in one short file: IK boom, two hydraulic cylinders, a hook that hangs plumb |
+
+The Wooting 80HE, from the maker's CAD: the blueprint, section A–A through the key stack, the shaded build with per-key RGB, and the Ghost case.
+
+| ![blueprint](docs/wooting80he-blueprint.jpg) | ![section](docs/wooting80he-section.jpg) |
+|---|---|
+| ![shaded](docs/wooting80he-3d.jpg) | ![ghost](docs/wooting80he-ghost.jpg) |
 
 What the V8's self-test proves, all measured on the rendered model:
 
@@ -268,6 +275,7 @@ skills/wireframe/SKILL.md the /wireframe command: drawing look
 METHOD.md                the method both commands follow (examples, library, model contract, review loop)
 references/
   drawing.md             how the drawing look works, what a model needs for it, fixes
+  research.md            the research step: the maker's CAD first, then specs, drawings, renders
   recreate.md            matching a photo or a real object
   from-idea.md           designing from a brief
   accuracy.md            dimension sheets, kinematics, probes
@@ -276,12 +284,14 @@ references/
   pitfalls.md            bugs that were hit, and their fixes
 lib/                     the library (copied into each project as src/craft/)
 template/                the viewer project
-examples/                turbojet, v8, mechanisms (crane is the template's own model)
+examples/                wooting80he, turbojet, v8, mechanisms (crane is the template's own model)
 demos/                   each example built as one offline HTML file
 tools/new.mjs            scaffold a project (--example)
 tools/shoot.mjs          screenshots, filmstrips, measurements, contact sheets
 tools/html.mjs           fold a build into one offline HTML file
 tools/install.mjs        link the two commands into ~/.claude/skills
+tools/step2mesh.py       read a maker's STEP: list parts, cut sections, export meshes (npm run setup:cad)
+tools/cadpack.mjs        pack an export into src/model/cad-data.js for lib/cad.js
 docs/                    images for this guide
 ```
 

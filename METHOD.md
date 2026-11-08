@@ -20,25 +20,26 @@ The project is plain Vite + three.js. `src/model/` is the model; `src/craft/` is
 
 ## Examples: copy the closest one
 
-Each is also built as one offline file in `$ENGINE/demos/` (`crane.html`, `mechanisms.html`, `v8-engine.html`, `turbojet.html`). Open one to show the user what the skill produces. After changing an example, rebuild its demo with `npm run html` in a scaffold of it and copy `dist/model.html` over.
+Each is also built as one offline file in `$ENGINE/demos/` (`crane.html`, `mechanisms.html`, `v8-engine.html`, `turbojet.html`, `wooting-80he.html` and its shaded twin `wooting-80he-3d.html`). Open one to show the user what the skill produces. After changing an example, rebuild its demo with `npm run html` in a scaffold of it and copy `dist/model.html` over.
 
 | Example | What it is | Worth stealing |
 |---|---|---|
 | `crane` (default) | Truck-mounted loader crane: slewing base, 2-section boom, 2 hydraulic cylinders, a hook that hangs plumb | The whole pattern in 120 lines: parameter block, part tree, `twoLinkIK`, `makeStruts`, clevis lugs, `probe()` |
 | `mechanisms` | One crank drives a gear train (m5, 20:32:20), a slider-crank in a glass cylinder, a rack and pinion, and a Jansen leg | `gear()` + `meshAngle()`, `rack()` phased to its pinion, `sliderCrank()`, the `circles()` linkage solver, `instancedLinks()`, probes that check each invariant |
 | `turbojet` | An axial turbojet drawn as a technical illustration (opens in the drawing look): 5-stage compressor, annular combustor, one turbine stage, nozzle; its annulus sized by continuity, its turbine work balanced against the compressor's | `blade()` rows as `InstancedMesh`, `turned()` casings, a kinematics module that is really a gas-path model, flow lines coloured by temperature and moving at the axial velocity, the section along the axis, `exploder()`, a probe that measures every built blade tip against the casing |
+| `wooting80he` | The Wooting 80HE keyboard built on Wooting's own published STEP assembly: case, plate, gasket, PCB, foam, stabilisers, LED bar, feet and every screw from the CAD; 84 switches and OEM keycaps built to standard. Opens as a blueprint (dimensions, section A–A, exploded build, title block); `VITE_LOOK=real npm run html` builds it shaded, with six case finishes, PBT grain, per-key RGB and a braided cable | The whole research-to-CAD pipeline (`references/research.md`): `step2mesh.py` + `cadpack.mjs` + `unpackCad()`, a tilt solved from the feet, a layout self-test against CAD positions, dimension lines and leader callouts (`annot.js`), `info.sheet`, shader grain and RGB (`look.js`), one model with two builds |
 | `v8` | A running Chevrolet 350 small-block from its published dimensions: cross-plane crank, 8 pistons and rods, timing chain, cam, 16 lobes, lifters, pushrods, 1.5:1 rockers, valves and springs, distributor, spark, gas pressure, torque and power | A pure `kin.js` with a `selfTest()`, firing order derived from geometry, a cam phased from the valve events, a moving chain on its tangent path, x-ray casings, `readout()`, timing and clearance checks |
 
 ## Two ways in
 
-- **Recreate something real:** a photo, a drawing, a product, a named machine. The evidence is the authority; measure it. Read `references/recreate.md`.
+- **Recreate something real:** a photo, a drawing, a product, a named machine. The evidence is the authority; measure it. **Always run the research step first** (`references/research.md`): a background research agent hunting for the maker's own CAD, spec table, drawings and measured reviews, while you scaffold. Then read `references/recreate.md`.
 - **Create from an idea:** "a salvage mech for a scrapyard". Write a five-line brief (job, size, power, world, look), borrow proportions from real machines that do the same job, and block it out before adding detail. Read `references/from-idea.md`.
 
 Both follow the same method and pass the same proof.
 
 ## The method
 
-1. **Evidence before geometry.** Photos from several sides, drawings, a spec sheet, a manual. A user's image is the authority on shape and proportion; with only an idea, the evidence is the brief plus the real machines you borrow from. Write down what is known and what must be estimated before any geometry.
+1. **Evidence before geometry.** For anything real, research first (`references/research.md`), and look hardest for the maker's own CAD: a published STEP becomes the geometry itself (`tools/step2mesh.py`, `tools/cadpack.mjs`, `lib/cad.js`), and then a spec table, drawings, measured reviews, orthographic renders, in that order. A user's image is the authority on shape and proportion; with only an idea, the evidence is the brief plus the real machines you borrow from. Write down what is known and what must be estimated before any geometry, each number tagged [spec], [cad], [photo], [std] or [est].
 2. **Real numbers, one source.** One parameter block in mm at the top: the envelope first, then every part, each number with its origin (spec, standard, measured off a reference, derived). Every pose, readout and label reads from the same functions, so nothing on screen can disagree with the motion. **Check one number by hand**, for example: 32 teeth × 4 mm module = 128 mm pitch diameter, and half its circumference is a 201 mm rack stroke for 180°. Or: 8 × bore area × stroke = 349.8 cubic inches. See `references/accuracy.md`.
 3. **The part tree is the joint tree.** Every moving part hangs from a `Group` on its real axis; geometry is offset from that pivot. Build in mm under one group scaled 0.001, so the scene is in metres. Mirror a side with `scale.x = -1` on its frame rather than rebuilding it.
 4. **One input drives everything.** Pose from a crank angle, a stroke, a speed, a reach. Nothing is keyframed. Derived quantities come from the equations: IK for reach, `circles()` for linkages, `sliderCrank` for pistons, `meshAngle` for gears, `strideFor` for ground contact. Anything integrated over time (a walker's body travel) is tabulated once with `tabulate()`. Put the math in a module with no three.js in it and give it a `selfTest()` you can run in node.
@@ -60,6 +61,7 @@ Both follow the same method and pass the same proof.
 | `stage.js` | `createStage({canvas, mode: 'studio' \| 'outdoor', env: 'softbox' \| 'room', floor: 'concrete' \| 'shadow'})`: lights, shadows that follow a point, AO with a skip list (`noAO`, `fx`), quality tiers |
 | `textures.js` | Procedural concrete, ground variation |
 | `checks.js` | `floatingParts`, `anchorGaps`, `overlaps` |
+| `cad.js` | `unpackCad(HEAD, DATA)`: a manufacturer's CAD exported by `tools/step2mesh.py` and packed by `tools/cadpack.mjs`, back as creased three.js geometries with their copies' offsets, plus the bounding boxes of skipped parts (screws drawn as cylinders) |
 
 ## The model contract
 

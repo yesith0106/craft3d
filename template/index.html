@@ -24,10 +24,31 @@
       body.nohud #ui { display: none; }
       #views button.look { margin-left: auto; border-color: #16181b; }
       body.drawing { background: #f6f3ee; }
+      /* the drawing sheet (info.sheet): a border, a title block and a header line, in the drawing look only */
+      #sheet { display: none; position: fixed; inset: 14px; border: 1.5px solid var(--ink); pointer-events: none; --ink: #1d2024; }
+      #sheet::before { content: ''; position: absolute; inset: 5px; border: 0.75px solid var(--ink); opacity: .55; }
+      body.drawing.has-sheet #sheet { display: block; }
+      body.pal-blueprint #sheet { --ink: #e9f1fb; }
+      #sheet .tb { position: absolute; right: 5px; bottom: 5px; display: grid; grid-template-columns: 92px 210px 70px 92px; font: 10px/1.25 ui-monospace, 'SF Mono', Menlo, monospace; color: var(--ink); border-top: 0.75px solid; border-left: 0.75px solid; letter-spacing: .5px; text-transform: uppercase; }
+      #sheet .tb div { border-right: 0.75px solid; border-bottom: 0.75px solid; padding: 4px 6px; }
+      #sheet .tb .k { opacity: .65; font-size: 8.5px; }
+      #sheet .tb .big { grid-column: span 2; font: 700 15px/1.2 ui-sans-serif, system-ui, sans-serif; letter-spacing: 3px; }
+      #sheet .tb .wide { grid-column: span 3; }
+      #sheet .marks { position: absolute; left: 12px; top: 8px; font: 10px ui-monospace, Menlo, monospace; color: var(--ink); letter-spacing: 2px; opacity: .8; }
+      body.drawing.has-sheet #ui { top: 30px; right: 30px; }
+      /* the panel on the blueprint palette */
+      body.drawing.pal-blueprint { background: #163e6e; }
+      body.drawing.pal-blueprint #ui { background: rgba(10, 35, 66, .82); border-color: #3c6da3; color: #e9f1fb; }
+      body.drawing.pal-blueprint #ui .sub, body.drawing.pal-blueprint #ui label { color: #a9c3e2; }
+      body.drawing.pal-blueprint #ui label span, body.drawing.pal-blueprint #readout { color: #eef4fb; }
+      body.drawing.pal-blueprint #views button { background: transparent; color: #e9f1fb; border-color: #3c6da3; }
+      body.drawing.pal-blueprint #ui input[type=range] { accent-color: #e8b34a; }
+      body.drawing.pal-blueprint #stats { color: #7ea3cc; }
     </style>
   </head>
   <body>
     <canvas id="c"></canvas>
+    <div id="sheet"></div>
     <div id="ui">
       <h1 id="name">model</h1>
       <div class="sub" id="desc"></div>

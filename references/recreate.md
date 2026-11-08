@@ -4,8 +4,9 @@ When the user gives a photo, drawing, product page or names a real object, the g
 
 ## 1. Gather and read the evidence
 
+- **Research first, every time:** follow `references/research.md`. Start the background research agent with its brief as soon as the object is named. The maker's own CAD, when it exists, replaces most of this file: measure it, export it, build on it.
 - Use every image given. If only one, ask (once) for a side or back view only if the hidden side is a large part of the object; otherwise infer it from how such things are built and say so.
-- Look up specs for named objects: overall dimensions, wheelbase, bore and stroke, link lengths, mass. A real number beats any measurement.
+- Look up specs for named objects: overall dimensions, wheelbase, bore and stroke, link lengths, mass. A real number beats any measurement, and a CAD file beats any number.
 - List the features one by one, in the reference's own order (top to bottom, front to back), before writing code. The walk-through catches parts that would otherwise be dropped: "white hood over the hull, dark socket with a light-grey sensor cube, red eye, shoulder pads on two steel rods...".
 
 ## 2. Measure the image

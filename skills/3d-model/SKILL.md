@@ -1,6 +1,6 @@
 ---
 name: 3d-model
-description: Build accurate, realistic 3D models in three.js entirely from code: machines, engines, vehicles, mechs, robots, weapons, tools, props and environments, at real dimensions, with shaded metal, paint, glass and rubber, clean or worn and battle-damaged (shader wear, no textures), lit in a studio or outdoors. Moving parts move by real kinematics (IK, linkages, gears, cams, slider-cranks) when the thing moves. Measured and photographed by a headless check loop before it is called done; exports one offline HTML file. Use for "realistic", "photoreal", "accurate", "to scale", "hard-surface", "worn", "damaged", "a working simulation", a game or website asset, or recreating an object from a photo, spec or idea. For line drawings, cutaways, section views, blueprints or technical illustrations use /wireframe instead.
+description: Build accurate, realistic 3D models in three.js entirely from code: machines, engines, vehicles, mechs, robots, weapons, tools, props and environments, at real dimensions, with shaded metal, paint, glass and rubber, clean or worn and battle-damaged (shader wear, no textures), lit in a studio or outdoors. Moving parts move by real kinematics (IK, linkages, gears, cams, slider-cranks) when the thing moves. Measured and photographed by a headless check loop before it is called done; exports one offline HTML file. Researches the real object first, hunting for the maker's own CAD (STEP), spec tables and drawings, and builds on the maker's geometry when it is published. Use for "realistic", "photoreal", "accurate", "to scale", "hard-surface", "worn", "damaged", "a working simulation", a game or website asset, or recreating an object from a photo, spec or idea. For line drawings, cutaways, section views, blueprints or technical illustrations use /wireframe instead.
 ---
 
 # /3d-model: the realistic look
@@ -14,7 +14,9 @@ ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d r
 cat "$ENGINE/METHOD.md"
 ```
 
-Read `METHOD.md` in full before building: start commands, examples, the 8-step method, the library, the model contract, the review loop, the three.js traps. Then read `references/recreate.md` or `references/from-idea.md` depending on what the user gave you. Everything below is what is specific to the realistic look.
+Read `METHOD.md` in full before building: start commands, examples, the 8-step method, the library, the model contract, the review loop, the three.js traps. Then read `references/recreate.md` or `references/from-idea.md` depending on what the user gave you.
+
+**For anything real, research comes first** (`references/research.md`): launch a background research agent with the brief in that file the moment the object is named, and look hardest for the maker's own CAD. A published STEP becomes the geometry (`tools/step2mesh.py` → `tools/cadpack.mjs` → `lib/cad.js`); then spec tables (read from the page source too), drawings, measured reviews and orthographic renders. `examples/wooting80he` is the worked example: Wooting's STEP assembly plus switches and keycaps built to standard, every published figure reproduced, `VITE_LOOK=real` for the shaded build with six case finishes, PBT grain and per-key RGB (`look.js`). Everything below is what is specific to the realistic look.
 
 ## Materials
 

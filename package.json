@@ -6,7 +6,8 @@
   "description": "The craft3d engine behind the /3d-model and /wireframe Claude Code commands: library, viewer, examples and the headless check tool.",
   "scripts": {
     "setup": "npm install && npx playwright install chromium && node tools/install.mjs",
-    "link": "node tools/install.mjs"
+    "link": "node tools/install.mjs",
+    "setup:cad": "python3 -m venv .ocp && .ocp/bin/pip install --quiet cadquery-ocp numpy && .ocp/bin/python -c \"import OCP, numpy; print('CAD tools ready: .ocp/bin/python tools/step2mesh.py')\""
   },
   "dependencies": {
     "playwright": "1.58.2"
