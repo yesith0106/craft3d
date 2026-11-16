@@ -11,6 +11,8 @@ One engine with two looks; this command is the drawn one. The method, the librar
 
 ```
 ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d folder this skill sits in: the cloned repo, or the installed plugin
+[ -f "$ENGINE/METHOD.md" ] || ENGINE="$HOME/.claude/craft3d"       # the skill was installed on its own, without the engine
+[ -f "$ENGINE/METHOD.md" ] || git clone --depth 1 https://github.com/yesith0106/craft3d "$ENGINE"   # so fetch the engine, once
 cat "$ENGINE/METHOD.md" "$ENGINE/references/drawing.md"
 ```
 
