@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "The craft3d engine behind the /3d-model and /wireframe Claude Code commands: library, viewer, examples and the headless check tool.",
+  "description": "The craft3d engine behind the /3d-model, /wireframe and /cinematic Claude Code commands: library, viewer, examples, the headless check tool and the film renderer.",
   "scripts": {
     "setup": "npm install && npx playwright install chromium && node tools/install.mjs",
     "link": "node tools/install.mjs",
-    "setup:cad": "python3 -m venv .ocp && .ocp/bin/pip install --quiet cadquery-ocp numpy && .ocp/bin/python -c \"import OCP, numpy; print('CAD tools ready: .ocp/bin/python tools/step2mesh.py')\""
+    "setup:cad": "python3 -m venv .ocp && .ocp/bin/pip install --quiet cadquery-ocp numpy && .ocp/bin/python -c \"import OCP, numpy; print('CAD tools ready: .ocp/bin/python tools/step2mesh.py')\"",
+    "setup:film": "npm install --no-save ffmpeg-static@5 && node -e \"console.log('ffmpeg ready for tools/film.mjs:', require('ffmpeg-static'))\""
   },
   "dependencies": {
     "playwright": "1.58.2"

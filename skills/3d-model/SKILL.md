@@ -36,6 +36,10 @@ Read `METHOD.md` in full before building: start commands, examples, the 8-step m
 - Transparent casings need their meshes in `stage.noAO`.
 - Paint is dielectric (metalness 0 to 0.1); bare metal is metal (0.8 to 1). Nothing is a perfect mirror.
 
+## Filming it
+
+A finished model can be filmed or shot as a product photograph: offline frames with real soft shadows, depth of field and motion blur, a dark showroom or a studio set, an MP4 or a high-resolution still. That is `/cinematic` (`references/cinematic.md`, `lib/cine.js`, `tools/film.mjs`); every scaffold already has a starter `src/model/film.js`. Build and prove the model first.
+
 ## The other look comes free
 
 Every model also opens as a technical drawing (the viewer's `drawing` button, `L`, or `?look=drawing`). Keep it working: closed solids with outward faces (`turned`, `outward`), see-through parts tagged or transparent, gas and sparks tagged `userData.ink = 'color'`. If the user wants a cutaway or a line drawing, switch to `/wireframe`.

@@ -21,6 +21,7 @@
 //     a drawing sheet (border, header line, title block) in the drawing look. info.shadowBox / info.aoRadius (m) for
 //     small objects.
 // URL options: ?stage=outdoor|studio  ?hud=0  ?damage=0.9  ?look=drawing  ?palette=paper|blueprint|print  ?section=0.5
+//   ?film=1 (dev server only): hands the page to src/model/film.js, which tools/film.mjs renders frame by frame.
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {createStage} from './craft/stage.js';
@@ -167,6 +168,7 @@ let tier = 2;
 const statsEl = document.getElementById('stats');
 const readEl = document.getElementById('readout');
 const loop = () => {
+  if (window.FILM) return; // the film rig renders its own frames
   const now = performance.now();
   const dt = Math.min(0.05, (now - last) / 1000);
   last = now;
@@ -213,3 +215,6 @@ window.VIEW = {
   check: () => ({floating: floatingParts(model.root), anchors: model.struts ? anchorGaps(model.struts) : []}),
   stats: () => ({fps, tier, draws: stage.renderer.info.render.calls, triangles: stage.renderer.info.render.triangles}),
 };
+
+// The film rig (references/cinematic.md). Dev server only, so the single-file build never carries it.
+if (import.meta.env.DEV && q.get('film')) window.FILM = (await import('./model/film.js')).setup({stage, model, params: p, THREE});

@@ -27,6 +27,16 @@ Every entry here cost real debugging time. Check the list when something looks o
 - **Washed-out, blue, flat look outdoors:** sky image light plus hemisphere plus exposure too high. Values that work are in `materials.md`.
 - **Flat-white concrete walls:** a box's uvs run 0..1 per face, but an extrusion's uvs are in mm. Use two materials with different texture repeats (`props.js` keeps `concrete` and `concreteMm`).
 
+## Film (`lib/cine.js`; more in `cinematic.md`)
+
+- **Lamp dots in gloss.** A sampled lamp is a point each sub-frame; glossy surfaces showed a constellation. Fix: lamps make only broad highlights (`specMin`) or none; sharp reflections come from the capture.
+- **The far floor glowed grey.** `scene.environment` lights everything with a capture taken at the subject's place, and ignores `envMapIntensity`. Fix: `userData.cineNoEnv` on wide floors.
+- **A haze pass that did nothing.** `ShaderPass` cloned its uniforms and dropped the depth texture. Fix: assign render-target textures to `pass.uniforms` after construction.
+- **Chrome that looked matte.** Mirror-low roughness in an evenly lit tent reflects an even grey. Fix the set, not the material: a dark tent, hard-edged boxes, strips.
+- **Every bracelet link the same tone.** Anisotropic reflection follows the grain, not the face. Fix: anisotropy about 0.1 for the shot.
+- **A glowing part twice as bright as it should be.** It was drawn in both the lamp layer and the reflection layer of an occlusion render. The rig now switches emission off for the reflection layer; a custom unlit material gets blacked out there.
+- **Close-ups blown out.** Light set for the wide is too much at 2 m. Fix: `ev` per shot.
+
 ## Detail
 
 - **Bolts and seams floating off rounded boxes.** A big-radius `rb` is far inside its box at the corners. Put details on flat regions (inside `w/2 − r`) or skip them.

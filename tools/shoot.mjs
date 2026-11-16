@@ -43,7 +43,9 @@ let server;
 let url = args.url;
 if (!url && args.project) {
   const port = 5600 + Math.floor(Math.random() * 300);
-  server = spawn('npx', ['vite', '--port', String(port), '--strictPort'], {cwd: path.resolve(args.project), stdio: ['ignore', 'pipe', 'pipe']});
+  // run vite's own entry with node: 'npx' is npx.cmd on Windows, which spawn() cannot start without a shell
+  const viteBin = path.join(path.resolve(args.project), 'node_modules', 'vite', 'bin', 'vite.js');
+  server = spawn(process.execPath, [viteBin, '--port', String(port), '--strictPort'], {cwd: path.resolve(args.project), stdio: ['ignore', 'pipe', 'pipe']});
   url = `http://localhost:${port}/`;
   await new Promise((res, rej) => {
     const t = setTimeout(() => rej(new Error('dev server did not start')), 20000);

@@ -2,7 +2,10 @@
 
 **Two Claude Code commands for building accurate 3D models in three.js from code: `/3d-model` draws them as realistic shaded metal, `/wireframe` draws them as technical illustrations.** Give either one a photo, a drawing, a product, a spec, or just an idea. It builds the object at real dimensions, with every moving part driven by real kinematics: IK, slider-cranks, gear trains, linkages, cams. Then it **measures and photographs its own work** before calling it done, and exports **one HTML file** that opens offline.
 
-Both commands share one engine, so every model has a button that switches between the two looks.
+[![A Mercedes-AMG F1 W17 in a dark showroom, ringed by fluorescent tubes on the floor, under a hanging frame of lights](docs/w17-film.jpg)](demos/mercedes-w17-film.mp4)
+<sub>**The Mercedes-AMG F1 W17, built to scale from code and filmed from code.** Every panel, wing element, suspension member and tyre is three.js geometry sized from the FIA 2026 regulations and Mercedes' published figures; the film is 120 lines of set, lights and shots. Click the picture for the 14 second film ([`demos/mercedes-w17-film.mp4`](demos/mercedes-w17-film.mp4)), or download [`demos/mercedes-w17.html`](demos/mercedes-w17.html) and steer it yourself.</sub>
+
+Both commands share one engine, so every model has a button that switches between the two looks. A third command, **`/cinematic`**, films a finished model or shoots it as a product photograph: frames rendered offline with real soft shadows, depth of field and motion blur, written as an MP4 or a high-resolution still.
 
 | `/3d-model`: realistic | `/wireframe`: technical drawing |
 |---|---|
@@ -16,6 +19,7 @@ Both commands share one engine, so every model has a button that switches betwee
 | A game or website asset, a product render, a realistic machine, worn or damaged metal | `/3d-model` |
 | A cutaway, a cross-section, an exploded view, a blueprint, a "how it works" illustration, line art | `/wireframe` |
 | Both | Either one: the viewer's **drawing / realistic** button (or the `L` key) switches looks on any model |
+| A film, a clip for a site or a reel, a product shot or hero image of a model | `/cinematic`, after the model is built |
 
 Motion is part of both. If the thing moves, it moves by its real equations in either look.
 
@@ -41,17 +45,23 @@ The checks find real mistakes. While the skill was being built, they caught a hy
 
 ## The examples
 
-**Try them now:** the [`demos/`](demos) folder holds a ready-built, single-file HTML of each example: [`turbojet.html`](demos/turbojet.html), [`v8-engine.html`](demos/v8-engine.html), [`mechanisms.html`](demos/mechanisms.html), [`crane.html`](demos/crane.html), and the Wooting 80HE as a blueprint, [`wooting-80he.html`](demos/wooting-80he.html), and shaded, [`wooting-80he-3d.html`](demos/wooting-80he-3d.html). Download one and double-click it. It runs offline, with no install. (GitHub shows HTML as source code, so open the file locally.) Every demo has the **drawing / realistic** button.
+**Try them now:** the [`demos/`](demos) folder holds a ready-built, single-file HTML of each example: [`mercedes-w17.html`](demos/mercedes-w17.html), [`turbojet.html`](demos/turbojet.html), [`v8-engine.html`](demos/v8-engine.html), [`mechanisms.html`](demos/mechanisms.html), [`crane.html`](demos/crane.html), and the Wooting 80HE as a blueprint, [`wooting-80he.html`](demos/wooting-80he.html), and shaded, [`wooting-80he-3d.html`](demos/wooting-80he-3d.html). Download one and double-click it. It runs offline, with no install. (GitHub shows HTML as source code, so open the file locally.) Every demo has the **drawing / realistic** button.
 
-Start your own project from the closest one: `node ~/.claude/craft3d/tools/new.mjs ./my-project --example turbojet` (`--example wooting80he`, `--example v8`, `--example mechanisms`, or leave it off for the crane).
+Start your own project from the closest one: `node ~/.claude/craft3d/tools/new.mjs ./my-project --example turbojet` (`--example mercedes-w17`, `--example wooting80he`, `--example v8`, `--example mechanisms`, or leave it off for the crane).
 
 | Example | What it is |
 |---|---|
+| `mercedes-w17` | The Mercedes-AMG F1 W17 E Performance, the 2026 car, to scale: 3400 mm wheelbase, 1900 mm wide, 970 mm high. The dimension sheet is tagged line by line: the FIA 2026 technical regulations for the legality boxes, Mercedes' and Pirelli's published figures, and measurements off the launch renders (the scale checked on the 705 mm front tyre). Push-rod suspension front and rear that follows the ride height, steering solved through its own linkage, active front and rear wings that move in the regulation 400 ms, wheels that turn at road speed, two driver liveries, three tyre compounds, and tyres with their tread, mould ribs and sidewall lettering in the shader. It comes with its film, [`film.js`](examples/mercedes-w17/film.js). (The livery and the marks on it belong to their owners; they are recreated here to show the car as it runs.) |
 | `wooting80he` | The Wooting 80HE keyboard, built on Wooting's own published CAD. The case, plate, silicone gasket, PCB, foam, stabilisers, LED bar, feet and all 30 screw and insert positions come from their STEP assembly; the 84 switches and the OEM keycaps with legends are built to the MX and OEM standards. It opens as a blueprint with a title block, dimensions, section A–A through the key stack and an exploded build. Built with `VITE_LOOK=real` it opens shaded: six case finishes (ABS black, ghost, frost; zinc black, raw, white), PBT and ABS grain, clear Lekker switches with their springs, per-key RGB, the LED bar and a braided cable. Every published figure reproduces: 346 × 142 mm, 19.4 mm at the front, 28.4 mm with caps, 2.8°, 6° and 10° on its feet. |
 | `turbojet` | An axial turbojet, opening as a technical drawing: a 5-stage compressor, an annular combustor with 12 injectors, one turbine stage, a nozzle. The gas path is sized from its thermodynamics: the compressor hub rises stage by stage because continuity says it must as the air gets denser, and the turbine's work balances the compressor's. Flow lines are coloured by the gas temperature and move at the axial velocity. Section cut along the axis, exploded view, a spool speed slider. |
 | `v8` | A running Chevrolet 350 small-block built from published dimensions, with these parts: <ul><li>a cross-plane crank, with 8 pistons and rods moved by the exact slider-crank equation</li><li>a 21:42 timing chain whose links move</li><li>the cam, 16 lobes, lifters, pushrods, 1.5:1 rockers, valves and springs</li><li>a distributor rotor that points at each cylinder's terminal as it fires</li><li>sparks 30° before top dead centre</li><li>each cylinder's charge coloured by its stroke</li><li>gas pressure, torque and power readouts</li><li>x-ray casings</li></ul> |
 | `mechanisms` | One crank drives a module-5 gear train, a piston in a glass cylinder, a rack and pinion, and a Theo Jansen leg |
 | `crane` (default) | A truck loader crane, the whole pattern in one short file: IK boom, two hydraulic cylinders, a hook that hangs plumb |
+
+The W17 in the viewer and as a drawing:
+
+| ![The W17 from the side in the viewer](docs/w17-viewer.jpg) | ![The W17 as a line drawing](docs/w17-drawing.jpg) |
+|---|---|
 
 The Wooting 80HE, from the maker's CAD: the blueprint, section A–A through the key stack, the shaded build with per-key RGB, and the Ghost case.
 
@@ -102,6 +112,19 @@ The probe caught a bug while the example was being built. Blades were placed by 
 
 ---
 
+### Films and hero stills
+
+`/cinematic` puts a finished model on a set and renders it frame by frame. Each frame is the average of dozens of renders, each with the lights at a different point of their soft boxes or tubes, the camera at a different point of its lens and of the open shutter. So area lights, soft shadows, depth of field and motion blur are real, not post effects. It costs a fraction of a second to a few seconds a frame instead of running live.
+
+![Frames from the W17's film: the lights strike, six close-ups cut fast, an orbit, lights out](docs/w17-film-frames.jpg)
+<sub>Frames from the W17's film ([`demos/mercedes-w17-film.mp4`](demos/mercedes-w17-film.mp4), 14 s, 1080p): fluorescent tubes strike round the car, the camera cuts through six close-ups (the front wheel steers, the rear wing opens, the rain light flashes), then orbits and pulls back as the lights go out. The tubes light the car as true line lights, the haze is lit by the same tubes, and the blur is the shutter's. The whole film is [`examples/mercedes-w17/film.js`](examples/mercedes-w17/film.js); the same file renders the upright 9:16 cut.</sub>
+
+| A product still | What the rig gives you |
+|---|---|
+| ![The Wooting 80HE floating on a warm grey backdrop](docs/film-wooting80he.jpg) | <ul><li>Soft boxes and fluorescent tubes that light, reflect and cast soft shadows as area lights</li><li>A reflection capture of the set, so polished metal shows the boxes as clean shapes</li><li>Occlusion layers for product stills, so gaps between parts do not glow</li><li>Haze and drifting smoke lit by the film's own lights</li><li>A shot list: slow moves, fast cuts, per-shot exposure, the mechanism running on cue</li><li>A film grade: bloom, contrast, vignette, grain, a measured paper backdrop</li><li>16:9, 9:16 or any still size, encoded with correct colour tags</li></ul> |
+
+How to light chrome, satin and matte black, how to plan from a reference, and every trap that was hit are in [`references/cinematic.md`](references/cinematic.md).
+
 ## Install
 
 Requirements: [Claude Code](https://claude.com/claude-code), Node.js 18+ and Git.
@@ -109,12 +132,13 @@ Requirements: [Claude Code](https://claude.com/claude-code), Node.js 18+ and Git
 ```bash
 git clone https://github.com/yesith0106/craft3d.git ~/.claude/craft3d
 cd ~/.claude/craft3d
-npm run setup        # Playwright + Chromium for the check tool, then links the two commands into ~/.claude/skills
+npm run setup        # Playwright + Chromium for the check tool, then links the three commands into ~/.claude/skills
+npm run setup:film   # optional: ffmpeg, for encoding films with /cinematic
 ```
 
-Restart Claude Code. You now have `/3d-model` and `/wireframe`. Claude also picks the right one by itself: ask for "a realistic …" and it uses `/3d-model`; ask for "a cutaway / section / exploded view / line drawing of …" and it uses `/wireframe`.
+Restart Claude Code. You now have `/3d-model`, `/wireframe` and `/cinematic`. Claude also picks the right one by itself: ask for "a realistic …" and it uses `/3d-model`; ask for "a cutaway / section / exploded view / line drawing of …" and it uses `/wireframe`; ask for "a cinematic / a film / a product shot of …" and it uses `/cinematic`.
 
-The commands are links into the repo, so `git -C ~/.claude/craft3d pull` updates both. To link them somewhere else, run `node tools/install.mjs --dir <skills folder>`.
+The commands are links into the repo, so `git -C ~/.claude/craft3d pull` updates them (run `npm run link` after a pull that adds a command). To link them somewhere else, run `node tools/install.mjs --dir <skills folder>`.
 
 ---
 
@@ -151,6 +175,18 @@ Claude writes a five-line brief (job, size, power, world, look) and borrows prop
 Every model drops into any three.js app: a game, a website, a configurator. Ask for that directly:
 
 > Take the model and put it in a third-person game where I can walk it around with WASD.
+
+### 4. Film it
+
+Once a model is built, ask for a film or a still, and give a reference if you have one:
+
+> /cinematic A 14 second film of the car in a dark showroom, fluorescent tubes on the floor, a slow camera move, a bit of haze and smoke, fast cuts on the details.
+
+> Make an image like this for the watch [image]. Match the lighting, the backdrop and the materials.
+
+> Make the film 9:16 for a reel as well.
+
+Claude writes a plan first (staging, camera, background, light, grade, and a shot list), shows you stills, then renders. Rendering is offline but quick: a 1080p frame of 32 renders takes from a fraction of a second to a few seconds on a desktop GPU, so a 10 to 15 second film is a matter of minutes.
 
 ### Tips for better results
 
@@ -272,6 +308,7 @@ A model passes when:
 ```
 skills/3d-model/SKILL.md the /3d-model command: realistic look
 skills/wireframe/SKILL.md the /wireframe command: drawing look
+skills/cinematic/SKILL.md the /cinematic command: films and hero stills of a finished model
 METHOD.md                the method both commands follow (examples, library, model contract, review loop)
 references/
   drawing.md             how the drawing look works, what a model needs for it, fixes
@@ -282,14 +319,16 @@ references/
   modeling.md            part trees, which shape for which part, detail rules
   materials.md           material values, the wear shader, lighting
   pitfalls.md            bugs that were hit, and their fixes
+  cinematic.md           films and stills: planning from a reference, the rig, lighting, shots, delivery
 lib/                     the library (copied into each project as src/craft/)
 template/                the viewer project
-examples/                wooting80he, turbojet, v8, mechanisms (crane is the template's own model)
-demos/                   each example built as one offline HTML file
+examples/                mercedes-w17, wooting80he, turbojet, v8, mechanisms (crane is the template's own model)
+demos/                   each example built as one offline HTML file, and the W17's film (mercedes-w17-film.mp4)
 tools/new.mjs            scaffold a project (--example)
 tools/shoot.mjs          screenshots, filmstrips, measurements, contact sheets
 tools/html.mjs           fold a build into one offline HTML file
-tools/install.mjs        link the two commands into ~/.claude/skills
+tools/film.mjs           render a project's film (src/model/film.js) to stills or an MP4
+tools/install.mjs        link the three commands into ~/.claude/skills
 tools/step2mesh.py       read a maker's STEP: list parts, cut sections, export meshes (npm run setup:cad)
 tools/cadpack.mjs        pack an export into src/model/cad-data.js for lib/cad.js
 docs/                    images for this guide
@@ -302,6 +341,8 @@ docs/                    images for this guide
 - **The tool warns "software renderer".** The headless browser didn't get your GPU, so frame rates aren't representative. Run it on a machine with a GPU or desktop session.
 - **`/3d-model` or `/wireframe` doesn't appear.** Run `npm run link` in the repo and restart Claude Code. If a folder with that name already exists in `~/.claude/skills`, the installer leaves it alone and says so.
 - **Stray lines or odd hatching in the drawing look.** See the table at the end of [`references/drawing.md`](references/drawing.md).
+- **`film.mjs` says no ffmpeg was found.** Run `npm run setup:film` in the skill folder, or pass `--ffmpeg <path>`. The frames are kept, so run again with `--resume`.
+- **`/cinematic` doesn't appear after a `git pull`.** The installer links commands by name: run `npm run link` and restart Claude Code.
 - **Low frame rate.** The viewer steps down automatically (no ambient occlusion, then lower resolution). Check the `draws` count, and merge static geometry if it's over about 500.
 
 ## License

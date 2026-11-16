@@ -1,6 +1,6 @@
 # craft3d: the method
 
-Shared by both commands: `/3d-model` (the realistic look) and `/wireframe` (the drawing look). They use one engine, one model contract and one proof; only the way the model is drawn differs, and every model can switch looks with one button.
+Shared by both building commands: `/3d-model` (the realistic look) and `/wireframe` (the drawing look). They use one engine, one model contract and one proof; only the way the model is drawn differs, and every model can switch looks with one button. A third command, `/cinematic`, films a finished model or shoots it as a product photograph (`references/cinematic.md`).
 
 Models that look right because they are right: every part sized from evidence, hung on a pivot where the real joint is, moved by the same equations the real mechanism obeys, then measured. Looking real, or drawing clean, follows from that. A line drawing is the harsher test: no shading hides a wrong proportion or a sloppy joint.
 
@@ -14,21 +14,23 @@ node "$ENGINE/tools/new.mjs" ./my-model                 # viewer + library + sta
 node "$ENGINE/tools/new.mjs" ./my-engine --example v8   # or start from the closest example
 cd my-model && npm run dev                                 # open the printed URL
 npm run html                                               # -> dist/model.html, one offline file, opens from disk
+node "$ENGINE/tools/film.mjs" --project . --out film --still 0,48,96 --sub 8   # its film (src/model/film.js) as stills; see /cinematic
 ```
 
 The project is plain Vite + three.js. `src/model/` is the model; `src/craft/` is the library, copied in so the project stands alone. Drop both into any three.js app (a game, a site) unchanged.
 
 ## Examples: copy the closest one
 
-Each is also built as one offline file in `$ENGINE/demos/` (`crane.html`, `mechanisms.html`, `v8-engine.html`, `turbojet.html`, `wooting-80he.html` and its shaded twin `wooting-80he-3d.html`). Open one to show the user what the skill produces. After changing an example, rebuild its demo with `npm run html` in a scaffold of it and copy `dist/model.html` over.
+Each is also built as one offline file in `$ENGINE/demos/` (`mercedes-w17.html`, `crane.html`, `mechanisms.html`, `v8-engine.html`, `turbojet.html`, `wooting-80he.html` and its shaded twin `wooting-80he-3d.html`). Open one to show the user what the skill produces; `mercedes-w17-film.mp4` is the W17's film (`examples/mercedes-w17/film.js`). After changing an example, rebuild its demo with `npm run html` in a scaffold of it and copy `dist/model.html` over.
 
 | Example | What it is | Worth stealing |
 |---|---|---|
 | `crane` (default) | Truck-mounted loader crane: slewing base, 2-section boom, 2 hydraulic cylinders, a hook that hangs plumb | The whole pattern in 120 lines: parameter block, part tree, `twoLinkIK`, `makeStruts`, clevis lugs, `probe()` |
 | `mechanisms` | One crank drives a gear train (m5, 20:32:20), a slider-crank in a glass cylinder, a rack and pinion, and a Jansen leg | `gear()` + `meshAngle()`, `rack()` phased to its pinion, `sliderCrank()`, the `circles()` linkage solver, `instancedLinks()`, probes that check each invariant |
 | `turbojet` | An axial turbojet drawn as a technical illustration (opens in the drawing look): 5-stage compressor, annular combustor, one turbine stage, nozzle; its annulus sized by continuity, its turbine work balanced against the compressor's | `blade()` rows as `InstancedMesh`, `turned()` casings, a kinematics module that is really a gas-path model, flow lines coloured by temperature and moving at the axial velocity, the section along the axis, `exploder()`, a probe that measures every built blade tip against the casing |
-| `wooting80he` | The Wooting 80HE keyboard built on Wooting's own published STEP assembly: case, plate, gasket, PCB, foam, stabilisers, LED bar, feet and every screw from the CAD; 84 switches and OEM keycaps built to standard. Opens as a blueprint (dimensions, section A–A, exploded build, title block); `VITE_LOOK=real npm run html` builds it shaded, with six case finishes, PBT grain, per-key RGB and a braided cable | The whole research-to-CAD pipeline (`references/research.md`): `step2mesh.py` + `cadpack.mjs` + `unpackCad()`, a tilt solved from the feet, a layout self-test against CAD positions, dimension lines and leader callouts (`annot.js`), `info.sheet`, shader grain and RGB (`look.js`), one model with two builds |
-| `v8` | A running Chevrolet 350 small-block from its published dimensions: cross-plane crank, 8 pistons and rods, timing chain, cam, 16 lobes, lifters, pushrods, 1.5:1 rockers, valves and springs, distributor, spark, gas pressure, torque and power | A pure `kin.js` with a `selfTest()`, firing order derived from geometry, a cam phased from the valve events, a moving chain on its tangent path, x-ray casings, `readout()`, timing and clearance checks |
+| `mercedes-w17` | The Mercedes-AMG F1 W17 (2026) to scale, from the FIA regulations, the team's published figures and measurements off the launch renders: lofted bodywork, wings, push-rod suspension that follows ride height, Ackermann steering, active aero, two liveries, tyres with shader relief | A dimension sheet (`params.js`) where every number carries its source tag, a `kin.js` self-test, lofted surfaces from stations (`geo.js`), a painted livery with decals (`livery.js`), a tyre material whose tread, ribs and lettering are relief in millimetres (`tyre.js`), and `film.js`: the showroom film, in 16:9 and 9:16 |
+| `wooting80he` | The Wooting 80HE keyboard built on Wooting's own published STEP assembly: case, plate, gasket, PCB, foam, stabilisers, LED bar, feet and every screw from the CAD; 84 switches and OEM keycaps built to standard. Opens as a blueprint (dimensions, section A–A, exploded build, title block); `VITE_LOOK=real npm run html` builds it shaded, with six case finishes, PBT grain, per-key RGB and a braided cable | The whole research-to-CAD pipeline (`references/research.md`): `step2mesh.py` + `cadpack.mjs` + `unpackCad()`, a tilt solved from the feet, a layout self-test against CAD positions, dimension lines and leader callouts (`annot.js`), `info.sheet`, shader grain and RGB (`look.js`), one model with two builds; `film.js`, a product still on a paper backdrop |
+| `v8` | A running Chevrolet 350 small-block from its published dimensions: cross-plane crank, 8 pistons and rods, timing chain, cam, 16 lobes, lifters, pushrods, 1.5:1 rockers, valves and springs, distributor, spark, gas pressure, torque and power | A pure `kin.js` with a `selfTest()`, firing order derived from geometry, a cam phased from the valve events, a moving chain on its tangent path, x-ray casings, `readout()`, timing and clearance checks; `film.js`, a small room film with close-ups of the running engine blurred by the shutter |
 
 ## Two ways in
 
@@ -59,7 +61,8 @@ Both follow the same method and pass the same proof.
 | `wear.js` | `makeWorn({color, rough, painted, bare, seed, dent})`, `bakeRest(root)`, `WEAR.uDamage` |
 | `props.js` | 20 ft container, 200 l drum, jersey barrier, crate, light pole, broken wall, gantry crane, rubble; `place()` with colliders; `collide()` |
 | `stage.js` | `createStage({canvas, mode: 'studio' \| 'outdoor', env: 'softbox' \| 'room', floor: 'concrete' \| 'shadow'})`: lights, shadows that follow a point, AO with a skip list (`noAO`, `fx`), quality tiers |
-| `textures.js` | Procedural concrete, ground variation |
+| `textures.js` | Procedural concrete, ground variation, `slabTextures()` (large floor tiles with height and roughness) |
+| `cine.js` | `createCine({stage, model, params, clip})`: the film rig. Offline frames averaged from many renders (area lights, depth of field, motion blur), soft boxes and tubes, a reflection capture of the set, occlusion layers, haze, shots, grade. Loaded on the dev server only; `references/cinematic.md` |
 | `checks.js` | `floatingParts`, `anchorGaps`, `overlaps` |
 | `cad.js` | `unpackCad(HEAD, DATA)`: a manufacturer's CAD exported by `tools/step2mesh.py` and packed by `tools/cadpack.mjs`, back as creased three.js geometries with their copies' offsets, plus the bounding boxes of skipped parts (screws drawn as cylinders) |
 
@@ -81,7 +84,7 @@ Both follow the same method and pass the same proof.
 
 `build({stage, THREE, ink})`: `ink.planes` is the section plane, for a model's own line or shader materials.
 
-`info = {name, description, stage, wear, look, palette}`; set `wear: false` for clean models (hides the paint-wear slider); `look: 'drawing'` opens in the drawing look (default `'real'`). `update()` sees `p.look`. `window.VIEW` gives `setView('front'|'side'|'back'|'left'|'top'|'34'|'low'|'close'|{az, el, d, target})`, `set(key, v)`, `damage(v)`, `look('real'|'drawing')`, `palette(name)`, `probe()`, `check()`, `stats()`, and `model` for model-specific checks (`VIEW.model.timingCheck()`). URL flags: `?stage=outdoor`, `?hud=0`, `?damage=0.9`, `?look=drawing`, `?palette=blueprint`, `?section=0.5`. The viewer's `drawing`/`realistic` button and the `L` key switch looks.
+`info = {name, description, stage, wear, look, palette}`; set `wear: false` for clean models (hides the paint-wear slider); `look: 'drawing'` opens in the drawing look (default `'real'`). `update()` sees `p.look`. `window.VIEW` gives `setView('front'|'side'|'back'|'left'|'top'|'34'|'low'|'close'|{az, el, d, target})`, `set(key, v)`, `damage(v)`, `look('real'|'drawing')`, `palette(name)`, `probe()`, `check()`, `stats()`, and `model` for model-specific checks (`VIEW.model.timingCheck()`). URL flags: `?stage=outdoor`, `?hud=0`, `?damage=0.9`, `?look=drawing`, `?palette=blueprint`, `?section=0.5`, `?film=1` (dev server only: the film rig, driven by `tools/film.mjs`). The viewer's `drawing`/`realistic` button and the `L` key switch looks.
 
 ## Review
 
