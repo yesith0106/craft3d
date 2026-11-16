@@ -140,6 +140,8 @@ Requirements: [Claude Code](https://claude.com/claude-code), Node.js 18+ and Git
 
 The three commands arrive as `/craft3d:3d-model`, `/craft3d:wireframe` and `/craft3d:cinematic` (the short names work too, unless another command already uses them). The first time one runs, Claude sets up the check tool's browser in the plugin's folder (`npm run setup`, about a minute).
 
+**With the skills CLI** (any agent that reads skills): `npx skills add yesith0106/craft3d`. It copies the three command folders only; the first time one runs, it fetches the engine into `~/.claude/craft3d`.
+
 **Or as a clone** you can edit and pull:
 
 ```bash
