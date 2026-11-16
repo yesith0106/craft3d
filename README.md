@@ -2,8 +2,8 @@
 
 **Two Claude Code commands for building accurate 3D models in three.js from code: `/3d-model` draws them as realistic shaded metal, `/wireframe` draws them as technical illustrations.** Give either one a photo, a drawing, a product, a spec, or just an idea. It builds the object at real dimensions, with every moving part driven by real kinematics: IK, slider-cranks, gear trains, linkages, cams. Then it **measures and photographs its own work** before calling it done, and exports **one HTML file** that opens offline.
 
-[![A Mercedes-AMG F1 W17 in a dark showroom, ringed by fluorescent tubes on the floor, under a hanging frame of lights](docs/w17-film.jpg)](demos/mercedes-w17-film.mp4)
-<sub>**The Mercedes-AMG F1 W17, built to scale from code and filmed from code.** Every panel, wing element, suspension member and tyre is three.js geometry sized from the FIA 2026 regulations and Mercedes' published figures; the film is 120 lines of set, lights and shots. Click the picture for the 14 second film ([`demos/mercedes-w17-film.mp4`](demos/mercedes-w17-film.mp4)), or download [`demos/mercedes-w17.html`](demos/mercedes-w17.html) and steer it yourself.</sub>
+[![A Mercedes-AMG F1 W17 in a dark showroom, ringed by fluorescent tubes on the floor, under a hanging frame of lights](docs/w17-film.jpg)](https://yesith0106.github.io/craft3d/)
+<sub>**The Mercedes-AMG F1 W17, built to scale from code and filmed from code.** Every panel, wing element, suspension member and tyre is three.js geometry sized from the FIA 2026 regulations and Mercedes' published figures; the film is 120 lines of set, lights and shots. **[Watch the film](https://yesith0106.github.io/craft3d/)** (14 seconds) or **[open the car in your browser](https://yesith0106.github.io/craft3d/mercedes-w17.html)** and steer it yourself.</sub>
 
 Both commands share one engine, so every model has a button that switches between the two looks. A third command, **`/cinematic`**, films a finished model or shoots it as a product photograph: frames rendered offline with real soft shadows, depth of field and motion blur, written as an MP4 or a high-resolution still.
 
@@ -45,7 +45,9 @@ The checks find real mistakes. While the skill was being built, they caught a hy
 
 ## The examples
 
-**Try them now:** the [`demos/`](demos) folder holds a ready-built, single-file HTML of each example: [`mercedes-w17.html`](demos/mercedes-w17.html), [`turbojet.html`](demos/turbojet.html), [`v8-engine.html`](demos/v8-engine.html), [`mechanisms.html`](demos/mechanisms.html), [`crane.html`](demos/crane.html), and the Wooting 80HE as a blueprint, [`wooting-80he.html`](demos/wooting-80he.html), and shaded, [`wooting-80he-3d.html`](demos/wooting-80he-3d.html). Download one and double-click it. It runs offline, with no install. (GitHub shows HTML as source code, so open the file locally.) Every demo has the **drawing / realistic** button.
+**Try them now, in your browser:** [the F1 car](https://yesith0106.github.io/craft3d/mercedes-w17.html) · [the Wooting 80HE, shaded](https://yesith0106.github.io/craft3d/wooting-80he-3d.html) · [the Wooting 80HE, blueprint](https://yesith0106.github.io/craft3d/wooting-80he.html) · [the V8](https://yesith0106.github.io/craft3d/v8-engine.html) · [the turbojet](https://yesith0106.github.io/craft3d/turbojet.html) · [the mechanisms](https://yesith0106.github.io/craft3d/mechanisms.html) · [the crane](https://yesith0106.github.io/craft3d/crane.html). All of them are on [one page](https://yesith0106.github.io/craft3d/). Every demo has the **drawing / realistic** button.
+
+Each is one self-contained HTML file in [`demos/`](demos): download it and it opens offline, with no install.
 
 Start your own project from the closest one: `node ~/.claude/craft3d/tools/new.mjs ./my-project --example turbojet` (`--example mercedes-w17`, `--example wooting80he`, `--example v8`, `--example mechanisms`, or leave it off for the crane).
 
@@ -128,6 +130,17 @@ How to light chrome, satin and matte black, how to plan from a reference, and ev
 ## Install
 
 Requirements: [Claude Code](https://claude.com/claude-code), Node.js 18+ and Git.
+
+**As a plugin** (the quickest): in Claude Code, run
+
+```
+/plugin marketplace add yesith0106/craft3d
+/plugin install craft3d@craft3d
+```
+
+The three commands arrive as `/craft3d:3d-model`, `/craft3d:wireframe` and `/craft3d:cinematic` (the short names work too, unless another command already uses them). The first time one runs, Claude sets up the check tool's browser in the plugin's folder (`npm run setup`, about a minute).
+
+**Or as a clone** you can edit and pull:
 
 ```bash
 git clone https://github.com/yesith0106/craft3d.git ~/.claude/craft3d
@@ -306,6 +319,7 @@ A model passes when:
 ## What's inside the skill
 
 ```
+.claude-plugin/           the plugin and marketplace manifests (/plugin marketplace add yesith0106/craft3d)
 skills/3d-model/SKILL.md the /3d-model command: realistic look
 skills/wireframe/SKILL.md the /wireframe command: drawing look
 skills/cinematic/SKILL.md the /cinematic command: films and hero stills of a finished model
@@ -323,7 +337,8 @@ references/
 lib/                     the library (copied into each project as src/craft/)
 template/                the viewer project
 examples/                mercedes-w17, wooting80he, turbojet, v8, mechanisms (crane is the template's own model)
-demos/                   each example built as one offline HTML file, and the W17's film (mercedes-w17-film.mp4)
+demos/                   each example built as one offline HTML file, the W17's film, and the site's page (index.html)
+.github/workflows/       publishes demos/ to GitHub Pages
 tools/new.mjs            scaffold a project (--example)
 tools/shoot.mjs          screenshots, filmstrips, measurements, contact sheets
 tools/html.mjs           fold a build into one offline HTML file

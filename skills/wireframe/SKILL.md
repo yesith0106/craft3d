@@ -1,6 +1,6 @@
 ---
 name: wireframe
-description: Build accurate 3D models in three.js drawn as technical illustrations: clean ink outlines with hidden lines removed, crease lines, section cuts with hatched cut faces, phantom lines for casings, dash-dot centre lines, flow lines coloured by temperature or pressure, and exploded views, on paper, blueprint or print palettes. Engines, turbines, gearboxes, pumps, mechanisms, machines and products at real dimensions, moving by real kinematics when they move, measured and photographed by a headless check loop; exports one offline HTML file. Researches the real object first, hunting for the maker's own CAD (STEP), spec tables and drawings, and builds on the maker's geometry when it is published. Use for "wireframe", "line drawing", "line art", "technical drawing", "technical illustration", "cutaway", "cross-section", "section view", "exploded view", "blueprint", "patent drawing", "how it works diagram", or recreating an object from a photo, spec or idea in that style. For shaded, realistic or worn metal use /3d-model instead.
+description: "Build accurate 3D models in three.js drawn as technical illustrations: clean ink outlines with hidden lines removed, crease lines, section cuts with hatched cut faces, phantom lines for casings, dash-dot centre lines, flow lines coloured by temperature or pressure, and exploded views, on paper, blueprint or print palettes. Engines, turbines, gearboxes, pumps, mechanisms, machines and products at real dimensions, moving by real kinematics when they move, measured and photographed by a headless check loop; exports one offline HTML file. Researches the real object first, hunting for the maker's own CAD (STEP), spec tables and drawings, and builds on the maker's geometry when it is published. Use for \"wireframe\", \"line drawing\", \"line art\", \"technical drawing\", \"technical illustration\", \"cutaway\", \"cross-section\", \"section view\", \"exploded view\", \"blueprint\", \"patent drawing\", \"how it works diagram\", or recreating an object from a photo, spec or idea in that style. For shaded, realistic or worn metal use /3d-model instead."
 ---
 
 # /wireframe: the drawing look
@@ -10,7 +10,7 @@ One engine with two looks; this command is the drawn one. The method, the librar
 **First, find the engine and read the method:**
 
 ```
-ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d repo this skill links into
+ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d folder this skill sits in: the cloned repo, or the installed plugin
 cat "$ENGINE/METHOD.md" "$ENGINE/references/drawing.md"
 ```
 

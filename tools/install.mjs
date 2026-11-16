@@ -8,6 +8,11 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 const REPO = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+// installed as a plugin (/plugin install craft3d@craft3d): Claude Code already serves the commands from here
+if (/[\\/]plugins[\\/](cache|marketplaces)[\\/]/.test(REPO)) {
+  console.log('craft3d is installed as a plugin: its commands are already available, nothing to link.');
+  process.exit(0);
+}
 const argv = process.argv.slice(2);
 const dir = argv.includes('--dir') ? path.resolve(argv[argv.indexOf('--dir') + 1]) : path.join(os.homedir(), '.claude', 'skills');
 fs.mkdirSync(dir, {recursive: true});

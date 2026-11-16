@@ -9,7 +9,7 @@ Models that look right because they are right: every part sized from evidence, h
 ## Start
 
 ```
-cd "$ENGINE" && npm run setup                          # once: playwright + chromium for the check tool
+cd "$ENGINE" && npm run setup                          # once: playwright + chromium for the check tool (also right when installed as a plugin)
 node "$ENGINE/tools/new.mjs" ./my-model                 # viewer + library + starter (a hydraulic loader crane)
 node "$ENGINE/tools/new.mjs" ./my-engine --example v8   # or start from the closest example
 cd my-model && npm run dev                                 # open the printed URL
@@ -21,7 +21,7 @@ The project is plain Vite + three.js. `src/model/` is the model; `src/craft/` is
 
 ## Examples: copy the closest one
 
-Each is also built as one offline file in `$ENGINE/demos/` (`mercedes-w17.html`, `crane.html`, `mechanisms.html`, `v8-engine.html`, `turbojet.html`, `wooting-80he.html` and its shaded twin `wooting-80he-3d.html`). Open one to show the user what the skill produces; `mercedes-w17-film.mp4` is the W17's film (`examples/mercedes-w17/film.js`). After changing an example, rebuild its demo with `npm run html` in a scaffold of it and copy `dist/model.html` over.
+Each is live at `https://yesith0106.github.io/craft3d/<name>.html` and also built as one offline file in `$ENGINE/demos/` (`mercedes-w17.html`, `crane.html`, `mechanisms.html`, `v8-engine.html`, `turbojet.html`, `wooting-80he.html` and its shaded twin `wooting-80he-3d.html`). Open one to show the user what the skill produces; `mercedes-w17-film.mp4` is the W17's film (`examples/mercedes-w17/film.js`). After changing an example, rebuild its demo with `npm run html` in a scaffold of it and copy `dist/model.html` over.
 
 | Example | What it is | Worth stealing |
 |---|---|---|

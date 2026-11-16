@@ -1,0 +1,15 @@
+{
+  "name": "craft3d",
+  "description": "craft3d: Claude Code commands that build, draw and film accurate 3D models in three.js.",
+  "owner": {
+    "name": "Yesith",
+    "url": "https://github.com/yesith0106"
+  },
+  "plugins": [
+    {
+      "name": "craft3d",
+      "source": "./",
+      "description": "Three commands on one engine: /3d-model builds accurate three.js models at real dimensions, /wireframe draws them as technical illustrations, /cinematic films them."
+    }
+  ]
+}

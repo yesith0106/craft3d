@@ -1,0 +1,38 @@
+# Publish the demos as a site: https://yesith0106.github.io/craft3d/ (demos/index.html), with every single-file model
+# beside it (…/craft3d/mercedes-w17.html) and the pictures the page uses under docs/.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['demos/**', 'docs/**', '.github/workflows/pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Lay out the site
+        run: |
+          mkdir -p _site/docs
+          cp -r demos/. _site/
+          cp docs/*.jpg _site/docs/
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v5

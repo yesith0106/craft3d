@@ -1,0 +1,9 @@
+{
+  "name": "craft3d",
+  "description": "Build accurate 3D models in three.js from code, at real dimensions with working mechanisms (/3d-model), draw them as technical illustrations (/wireframe), and film them or shoot them as product photographs (/cinematic). Measured and photographed by a headless check loop; exports one offline HTML file.",
+  "author": {"name": "Yesith", "url": "https://github.com/yesith0106"},
+  "homepage": "https://yesith0106.github.io/craft3d/",
+  "repository": "https://github.com/yesith0106/craft3d",
+  "license": "MIT",
+  "keywords": ["3d", "threejs", "webgl", "cad", "modeling", "technical-drawing", "rendering", "film"]
+}

@@ -1,0 +1,141 @@
+<!doctype html>
+<!-- The site at yesith0106.github.io/craft3d: this folder, published by .github/workflows/pages.yml with docs/*.jpg
+     copied beside it as docs/. Open it through the site (or a local server from a copy laid out the same way). -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>craft3d: 3D models to scale, built and filmed from code</title>
+    <meta name="description" content="Three Claude Code commands that build accurate three.js models at real dimensions, draw them as technical illustrations, and film them. Open the models in your browser." />
+    <meta property="og:title" content="craft3d: 3D models to scale, built and filmed from code" />
+    <meta property="og:description" content="A Formula 1 car from the FIA rulebook, a keyboard from its maker's CAD, a running V8. Built, drawn and filmed by Claude Code. Open them in your browser." />
+    <meta property="og:image" content="https://yesith0106.github.io/craft3d/docs/w17-film.jpg" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="data:," />
+    <style>
+      :root { --bg: #0a0a0b; --panel: #121214; --line: #232327; --text: #ededee; --dim: #9a9aa2; --accent: #2ee6c5; }
+      * { box-sizing: border-box; }
+      html { background: var(--bg); color: var(--text); font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+      body { margin: 0; }
+      a { color: inherit; }
+      .wrap { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+      header { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+      header .name { font-weight: 650; letter-spacing: 0.02em; }
+      header a { color: var(--dim); text-decoration: none; font-size: 14px; }
+      header a:hover { color: var(--text); }
+      .film { position: relative; border-radius: 14px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; border: 1px solid var(--line); }
+      .film video { display: block; width: 100%; height: 100%; object-fit: cover; }
+      h1 { font-size: clamp(30px, 5vw, 54px); line-height: 1.06; letter-spacing: -0.025em; font-weight: 650; margin: 44px 0 14px; max-width: 21ch; }
+      .lead { color: var(--dim); font-size: clamp(16px, 1.6vw, 19px); max-width: 62ch; margin: 0 0 26px; }
+      .lead b { color: var(--text); font-weight: 550; }
+      .cta { display: flex; flex-wrap: wrap; gap: 10px; }
+      .btn { display: inline-block; padding: 11px 18px; border-radius: 999px; text-decoration: none; font-weight: 550; font-size: 15px; border: 1px solid var(--line); }
+      .btn.main { background: var(--text); color: #0a0a0b; border-color: var(--text); }
+      .btn:hover { border-color: var(--dim); }
+      h2 { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); font-weight: 600; margin: 72px 0 6px; }
+      .note { color: var(--dim); font-size: 14px; margin: 0 0 20px; }
+      .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .card { display: block; text-decoration: none; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; transition: border-color 0.15s, transform 0.15s; }
+      .card:hover { border-color: #3a3a41; transform: translateY(-2px); }
+      .card img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; background: #1a1a1d; }
+      .card div { padding: 13px 15px 15px; }
+      .card strong { display: block; font-weight: 600; font-size: 15px; }
+      .card span { color: var(--dim); font-size: 13.5px; line-height: 1.45; display: block; margin-top: 3px; }
+      .card.wide { grid-column: span 2; }
+      .card.more { display: flex; align-items: flex-end; min-height: 150px; background: transparent; }
+      .card.more strong { font-size: 17px; }
+      .card.wide img { aspect-ratio: 32 / 10.4; }
+      .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+      .three div { border-top: 1px solid var(--line); padding-top: 14px; }
+      .three code { color: var(--accent); font: 600 15px ui-monospace, 'SF Mono', Menlo, Consolas, monospace; }
+      .three p { color: var(--dim); font-size: 14.5px; margin: 6px 0 0; }
+      pre { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; overflow-x: auto; font: 13.5px/1.6 ui-monospace, 'SF Mono', Menlo, Consolas, monospace; color: #d9d9dd; margin: 0; }
+      pre i { color: #6d6d75; font-style: normal; }
+      footer { color: #6d6d75; font-size: 13px; padding: 56px 0 44px; }
+      footer a { color: var(--dim); }
+      @media (max-width: 820px) {
+        .grid, .three { grid-template-columns: 1fr; }
+        .card.wide { grid-column: auto; }
+        .card.wide img { aspect-ratio: 16 / 10; }
+        h2 { margin-top: 52px; }
+      }
+      @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <span class="name">craft3d</span>
+        <a href="https://github.com/yesith0106/craft3d">GitHub &rarr;</a>
+      </header>
+
+      <div class="film">
+        <video src="mercedes-w17-film.mp4" poster="docs/w17-film.jpg" autoplay muted loop playsinline controls aria-label="A Mercedes-AMG F1 W17 in a dark showroom: fluorescent tubes strike round the car, the camera cuts through close-ups, then orbits as the lights go out"></video>
+      </div>
+
+      <h1>3D models to scale, built and filmed from code.</h1>
+      <p class="lead">
+        <b>craft3d is three commands for Claude Code.</b> Give it a photo, a spec or an idea and it builds the object in three.js at real dimensions, with every moving part driven by its real mechanism. Then it measures and photographs its own work before calling it done. The car above was built from the FIA 2026 rulebook, and the film is 120 lines of code.
+      </p>
+      <div class="cta">
+        <a class="btn main" href="mercedes-w17.html">Open the F1 car</a>
+        <a class="btn" href="https://github.com/yesith0106/craft3d#install">Install the commands</a>
+      </div>
+
+      <h2>Open a model</h2>
+      <p class="note">Each runs in your browser, nothing to install. Drag to orbit, move the sliders to work the mechanism, press L for the drawing.</p>
+      <div class="grid">
+        <a class="card wide" href="mercedes-w17.html">
+          <img src="docs/w17-viewer.jpg" alt="The Mercedes-AMG F1 W17 from the side" loading="lazy" />
+          <div><strong>Mercedes-AMG F1 W17</strong><span>The 2026 car to scale: 3400 mm wheelbase, push-rod suspension, steering through its linkage, active wings that move in the regulation 400 ms.</span></div>
+        </a>
+        <a class="card" href="wooting-80he-3d.html">
+          <img src="docs/wooting80he-3d.jpg" alt="The Wooting 80HE keyboard, shaded, with RGB backlight" loading="lazy" />
+          <div><strong>Wooting 80HE</strong><span>Built on Wooting's own published CAD. Six case finishes, per-key RGB.</span></div>
+        </a>
+        <a class="card" href="wooting-80he.html">
+          <img src="docs/wooting80he-blueprint.jpg" alt="The Wooting 80HE as a blueprint with dimensions" loading="lazy" />
+          <div><strong>Wooting 80HE, blueprint</strong><span>The same model as a drawing: dimensions, section A&ndash;A, exploded build.</span></div>
+        </a>
+        <a class="card" href="v8-engine.html">
+          <img src="docs/v8-viewer.jpg" alt="A running Chevrolet 350 small-block V8" loading="lazy" />
+          <div><strong>Small-block V8</strong><span>A running Chevrolet 350: crank, cam, valvetrain and firing order from its geometry.</span></div>
+        </a>
+        <a class="card" href="turbojet.html">
+          <img src="docs/turbojet-section.jpg" alt="An axial turbojet in section with flow lines" loading="lazy" />
+          <div><strong>Turbojet</strong><span>A cutaway sized from its thermodynamics, flow lines coloured by gas temperature.</span></div>
+        </a>
+        <a class="card" href="mechanisms.html">
+          <img src="docs/mechanisms.jpg" alt="Gears, a rack and pinion, a slider-crank and a Jansen leg driven by one crank" loading="lazy" />
+          <div><strong>Mechanisms</strong><span>One crank drives a gear train, a piston, a rack and pinion and a Jansen leg.</span></div>
+        </a>
+        <a class="card" href="crane.html">
+          <img src="docs/viewer.jpg" alt="A hydraulic loader crane in the viewer" loading="lazy" />
+          <div><strong>Loader crane</strong><span>The whole pattern in one short file: an IK boom and two hydraulic cylinders.</span></div>
+        </a>
+        <a class="card more" href="https://github.com/yesith0106/craft3d#using-it">
+          <div><strong>Build your own &rarr;</strong><span>Attach a photo or name the object. Claude researches it, builds it, checks it and hands you one HTML file like these.</span></div>
+        </a>
+      </div>
+
+      <h2>The three commands</h2>
+      <div class="three">
+        <div><code>/3d-model</code><p>Realistic: shaded paint, metal, glass and rubber, clean or worn, at real dimensions with working mechanisms.</p></div>
+        <div><code>/wireframe</code><p>The same model as a technical illustration: section cuts, exploded views, blueprints.</p></div>
+        <div><code>/cinematic</code><p>Films it or shoots it as a product photograph, with real soft shadows, depth of field and motion blur.</p></div>
+      </div>
+
+      <h2>Install</h2>
+      <pre><i># in Claude Code</i>
+/plugin marketplace add yesith0106/craft3d
+/plugin install craft3d@craft3d</pre>
+      <p class="note" style="margin-top: 12px">Or clone it and link the commands yourself: see the <a href="https://github.com/yesith0106/craft3d#install">README</a>.</p>
+
+      <footer>
+        MIT licence &middot; <a href="https://github.com/yesith0106/craft3d">github.com/yesith0106/craft3d</a><br />
+        The car's livery and the marks on it belong to their owners; they are recreated to show the car as it runs.
+      </footer>
+    </div>
+  </body>
+</html>

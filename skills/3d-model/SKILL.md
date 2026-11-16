@@ -1,6 +1,6 @@
 ---
 name: 3d-model
-description: Build accurate, realistic 3D models in three.js entirely from code: machines, engines, vehicles, mechs, robots, weapons, tools, props and environments, at real dimensions, with shaded metal, paint, glass and rubber, clean or worn and battle-damaged (shader wear, no textures), lit in a studio or outdoors. Moving parts move by real kinematics (IK, linkages, gears, cams, slider-cranks) when the thing moves. Measured and photographed by a headless check loop before it is called done; exports one offline HTML file. Researches the real object first, hunting for the maker's own CAD (STEP), spec tables and drawings, and builds on the maker's geometry when it is published. Use for "realistic", "photoreal", "accurate", "to scale", "hard-surface", "worn", "damaged", "a working simulation", a game or website asset, or recreating an object from a photo, spec or idea. For line drawings, cutaways, section views, blueprints or technical illustrations use /wireframe instead.
+description: "Build accurate, realistic 3D models in three.js entirely from code: machines, engines, vehicles, mechs, robots, weapons, tools, props and environments, at real dimensions, with shaded metal, paint, glass and rubber, clean or worn and battle-damaged (shader wear, no textures), lit in a studio or outdoors. Moving parts move by real kinematics (IK, linkages, gears, cams, slider-cranks) when the thing moves. Measured and photographed by a headless check loop before it is called done; exports one offline HTML file. Researches the real object first, hunting for the maker's own CAD (STEP), spec tables and drawings, and builds on the maker's geometry when it is published. Use for \"realistic\", \"photoreal\", \"accurate\", \"to scale\", \"hard-surface\", \"worn\", \"damaged\", \"a working simulation\", a game or website asset, or recreating an object from a photo, spec or idea. For line drawings, cutaways, section views, blueprints or technical illustrations use /wireframe instead."
 ---
 
 # /3d-model: the realistic look
@@ -10,7 +10,7 @@ One engine with two looks; this command is the shaded one. The method, the libra
 **First, find the engine and read the method:**
 
 ```
-ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d repo this skill links into
+ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d folder this skill sits in: the cloned repo, or the installed plugin
 cat "$ENGINE/METHOD.md"
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: cinematic
-description: Film a three.js model built with craft3d, or shoot it as a product photograph, entirely from code and rendered offline on the GPU. Each frame is many renders averaged, so soft boxes and fluorescent tubes act as true area lights, and soft shadows, depth of field and motion blur are real. Dark showrooms with tubes that strike, haze and smoke; studio sets of soft boxes and strips; a floating product on a paper backdrop; fast-cut close-ups, slow orbits, a travelling light; the mechanism running on cue. Writes an MP4 (16:9 or 9:16) or a high-resolution still, matched to a reference image or film when one is given. Use for "cinematic", "film", "video", "clip", "trailer", "commercial", "reel", "turntable", "product shot", "hero shot", "hero image", "studio shot", "render it like this photo", "make it look like this ad", or "a cinematic of the model". The model must exist first: build it with /3d-model, then film it.
+description: "Film a three.js model built with craft3d, or shoot it as a product photograph, entirely from code and rendered offline on the GPU. Each frame is many renders averaged, so soft boxes and fluorescent tubes act as true area lights, and soft shadows, depth of field and motion blur are real. Dark showrooms with tubes that strike, haze and smoke; studio sets of soft boxes and strips; a floating product on a paper backdrop; fast-cut close-ups, slow orbits, a travelling light; the mechanism running on cue. Writes an MP4 (16:9 or 9:16) or a high-resolution still, matched to a reference image or film when one is given. Use for \"cinematic\", \"film\", \"video\", \"clip\", \"trailer\", \"commercial\", \"reel\", \"turntable\", \"product shot\", \"hero shot\", \"hero image\", \"studio shot\", \"render it like this photo\", \"make it look like this ad\", or \"a cinematic of the model\". The model must exist first: build it with /3d-model, then film it."
 ---
 
 # /cinematic: films and hero stills
@@ -10,7 +10,7 @@ One engine, two looks, and this: a camera crew for a model that is already built
 **First, find the engine and read the reference:**
 
 ```
-ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d repo this skill links into
+ENGINE="$(cd -P "<this skill's base directory>/../.." && pwd)"   # the craft3d folder this skill sits in: the cloned repo, or the installed plugin
 cat "$ENGINE/references/cinematic.md"
 ```
 
